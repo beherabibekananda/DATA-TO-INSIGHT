@@ -22,21 +22,7 @@ const queryClient = new QueryClient();
 
 // Protected Route Component for Admin
 const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, profile, loading } = useAuth();
-
-  // Check for admin session in localStorage (for hardcoded admin)
-  const adminSession = localStorage.getItem('admin_session');
-  let isHardcodedAdmin = false;
-
-  if (adminSession) {
-    try {
-      const session = JSON.parse(adminSession);
-      isHardcodedAdmin = session.user.email === 'bibek@admin.com' &&
-        session.expires_at > Date.now();
-    } catch (error) {
-      localStorage.removeItem('admin_session');
-    }
-  }
+  const { isAdmin, loading } = useAuth();
 
   if (loading) {
     return (
@@ -46,8 +32,7 @@ const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  // Allow access if user is regular admin OR hardcoded admin
-  if (!((user && profile?.role === 'admin') || isHardcodedAdmin)) {
+  if (!isAdmin) {
     return <Navigate to="/admin-login" replace />;
   }
 
@@ -94,22 +79,10 @@ const AppContent = () => {
         path="/admin-login"
         element={
           (() => {
-            // Check for hardcoded admin session
-            const adminSession = localStorage.getItem('admin_session');
-            let isHardcodedAdmin = false;
+            const { isAdmin } = useAuth();
 
-            if (adminSession) {
-              try {
-                const session = JSON.parse(adminSession);
-                isHardcodedAdmin = session.user.email === 'bibek@admin.com' &&
-                  session.expires_at > Date.now();
-              } catch (error) {
-                localStorage.removeItem('admin_session');
-              }
-            }
-
-            // Redirect if already logged in as admin (regular or hardcoded)
-            if ((user && profile?.role === 'admin') || isHardcodedAdmin) {
+            // Redirect if already logged in as admin
+            if (isAdmin) {
               return <Navigate to="/adminDashboard" replace />;
             }
 

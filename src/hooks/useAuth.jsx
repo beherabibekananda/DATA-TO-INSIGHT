@@ -136,6 +136,17 @@ export const AuthProvider = ({ children }) => {
     return { data, error };
   };
 
+  const adminSession = localStorage.getItem('admin_session');
+  let isOTPAdmin = false;
+  if (adminSession) {
+    try {
+      const session = JSON.parse(adminSession);
+      isOTPAdmin = session.expires_at > Date.now();
+    } catch (error) {
+      localStorage.removeItem('admin_session');
+    }
+  }
+
   const value = {
     user,
     session,
@@ -145,7 +156,7 @@ export const AuthProvider = ({ children }) => {
     signIn,
     signOut,
     updateProfile,
-    isAdmin: profile?.role === 'admin'
+    isAdmin: (profile?.role === 'admin') || isOTPAdmin
   };
 
   return (
