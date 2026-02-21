@@ -44,7 +44,7 @@ CREATE POLICY "Anyone can read allowed admin emails" ON public.admin_allowed_ema
 
 -- Insert the default admin email
 INSERT INTO public.admin_allowed_emails (email, name)
-VALUES ('beherebibekananda778@gmail.com', 'Bibekananda Behera')
+VALUES ('beherabibekananda778@gmail.com', 'Bibekananda Behera')
 ON CONFLICT (email) DO NOTHING;
 
 -- Function to generate OTP and store it

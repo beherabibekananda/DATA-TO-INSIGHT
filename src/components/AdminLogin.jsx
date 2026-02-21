@@ -49,15 +49,17 @@ const AdminLogin = ({ onLoginSuccess }) => {
       });
 
       if (rpcError) {
-        console.error('OTP generation error:', rpcError);
-        setError('Failed to send OTP. Please try again.');
+        console.error('OTP generation RPC error:', rpcError);
+        setError(`Database Error: ${rpcError.message || 'Failed to connect to OTP service'}`);
         return;
       }
 
-      const result = typeof data === 'string' ? JSON.parse(data) : data;
+      // Supabase returns the JSON object directly
+      const result = data;
+      console.log('OTP generation result:', result);
 
-      if (!result.success) {
-        setError(result.message || 'This email is not authorized for admin access.');
+      if (!result || !result.success) {
+        setError(result?.message || 'This email is not authorized for admin access.');
         return;
       }
 
@@ -157,15 +159,16 @@ const AdminLogin = ({ onLoginSuccess }) => {
       });
 
       if (rpcError) {
-        console.error('OTP verification error:', rpcError);
-        setError('Failed to verify OTP. Please try again.');
+        console.error('OTP verification RPC error:', rpcError);
+        setError(`Database Error: ${rpcError.message || 'Failed to verify OTP'}`);
         return;
       }
 
-      const result = typeof data === 'string' ? JSON.parse(data) : data;
+      const result = data;
+      console.log('OTP verification result:', result);
 
-      if (!result.success) {
-        setError(result.message || 'Invalid or expired OTP. Please try again.');
+      if (!result || !result.success) {
+        setError(result?.message || 'Invalid or expired OTP. Please try again.');
         return;
       }
 
