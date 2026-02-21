@@ -40,7 +40,7 @@ export const predictiveAPI = {
     try {
       const student = await getStudentById(studentId);
 
-      const gpaScore = student.gpa ? Math.min(student.gpa / 4.0, 1.0) : 0.5;
+      const gpaScore = student.gpa ? Math.min(student.gpa / 10.0, 1.0) : 0.5;
       const attendanceScore = student.attendance_rate ? student.attendance_rate / 100 : 0.5;
       const engagementScore = student.engagement_score ? student.engagement_score / 100 : 0.5;
       const overallScore = 1 - (gpaScore * 0.4 + attendanceScore * 0.3 + engagementScore * 0.2 + 0.1);
@@ -90,7 +90,7 @@ export const predictiveAPI = {
         : allStudents;
 
       const predictions = students.map(student => {
-        const gpaScore = student.gpa ? Math.min(student.gpa / 4.0, 1.0) : 0.5;
+        const gpaScore = student.gpa ? Math.min(student.gpa / 10.0, 1.0) : 0.5;
         const attendanceScore = student.attendance_rate ? student.attendance_rate / 100 : 0.5;
         const engagementScore = student.engagement_score ? student.engagement_score / 100 : 0.5;
         const riskScore = 1 - (gpaScore * 0.4 + attendanceScore * 0.3 + engagementScore * 0.2 + 0.1);

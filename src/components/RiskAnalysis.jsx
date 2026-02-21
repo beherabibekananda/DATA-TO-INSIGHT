@@ -78,7 +78,7 @@ const RiskAnalysis = () => {
 
   // Risk distribution data for scatter plot using real GPA data
   const scatterData = predictiveResults?.predictions.map((pred, index) => ({
-    x: pred.gpa ? (pred.gpa / 4.0) * 100 : 50,
+    x: pred.gpa ? (pred.gpa / 10.0) * 100 : 50,
     y: pred.riskScore * 100,
     risk: pred.riskLevel,
     confidence: pred.confidence,

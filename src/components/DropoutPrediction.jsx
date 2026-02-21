@@ -76,7 +76,7 @@ const DropoutPrediction = () => {
         const engagement = parseFloat(studentData.engagement) || 0;
         const year = parseInt(studentData.year) || 1;
 
-        const gpaScore = Math.min(gpa / 4.0, 1.0);
+        const gpaScore = Math.min(gpa / 10.0, 1.0);
         const attendanceScore = attendance / 100;
         const engagementScore = engagement / 100;
         const yearScore = Math.max(0, 1 - (year - 1) * 0.2);
@@ -93,9 +93,16 @@ const DropoutPrediction = () => {
 
         const recommendations = [];
         if (attendanceScore < 0.75) recommendations.push({ priority: 'high', action: 'Improve Attendance', description: `Current attendance is ${attendance}%. Target: 75%+. Regular attendance is critical for academic success.`, expectedImpact: +(0.75 - attendanceScore).toFixed(2) });
-        if (gpaScore < 0.6) recommendations.push({ priority: 'high', action: 'Academic Support Required', description: `Current GPA is ${gpa.toFixed(2)}. Consider tutoring, study groups, or academic counseling.`, expectedImpact: +(0.6 - gpaScore).toFixed(2) });
+        if (gpaScore < 0.6) recommendations.push({ priority: 'high', action: 'Academic Support Required', description: `Current GPA is ${gpa.toFixed(1)}. Consider tutoring, study groups, or academic counseling.`, expectedImpact: +(0.6 - gpaScore).toFixed(2) });
         if (engagementScore < 0.6) recommendations.push({ priority: 'medium', action: 'Increase Engagement', description: `Engagement score is ${engagement}/100. Encourage participation in clubs, events, and class activities.`, expectedImpact: +(0.6 - engagementScore).toFixed(2) });
-        if (recommendations.length === 0) recommendations.push({ priority: 'low', action: 'Maintain Current Performance', description: 'Student is performing well across all metrics. Keep up the good work!', expectedImpact: 0 });
+
+        // Positive Reassurance for Good Students
+        if (overallScore < 0.2) {
+            recommendations.push({ priority: 'low', action: 'Outstanding Performance', description: 'This student is an academic role model! They show strong consistency across all metrics.', expectedImpact: 0 });
+            recommendations.push({ priority: 'low', action: 'Peer Mentorship Candidate', description: 'Consider this student for a peer tutoring or mentorship role to further develop leadership skills.', expectedImpact: 0 });
+        } else if (recommendations.length === 0) {
+            recommendations.push({ priority: 'low', action: 'Maintain Current Performance', description: 'Student is performing well across all metrics. Keep up the good work!', expectedImpact: 0 });
+        }
 
         return {
             studentName: studentData.name || 'Manual Entry',
@@ -125,7 +132,7 @@ const DropoutPrediction = () => {
         const engagement = parseFloat(formData.engagement);
 
         if (!formData.name.trim()) errors.name = 'Student name is required';
-        if (!formData.gpa || isNaN(gpa) || gpa < 0 || gpa > 4.0) errors.gpa = 'Enter a valid GPA (0.0 - 4.0)';
+        if (!formData.gpa || isNaN(gpa) || gpa < 0 || gpa > 10.0) errors.gpa = 'Enter a valid GPA (0.0 - 10.0)';
         if (!formData.attendance || isNaN(attendance) || attendance < 0 || attendance > 100) errors.attendance = 'Enter a valid percentage (0 - 100)';
         if (!formData.engagement || isNaN(engagement) || engagement < 0 || engagement > 100) errors.engagement = 'Enter a valid score (0 - 100)';
 
@@ -335,24 +342,24 @@ const DropoutPrediction = () => {
                             <div className="space-y-2">
                                 <Label className="text-gray-300 flex items-center gap-2">
                                     <BarChart3 className="w-4 h-4 text-green-400" />
-                                    GPA (out of 4.0) <span className="text-red-400">*</span>
+                                    GPA (out of 10.0) <span className="text-red-400">*</span>
                                 </Label>
                                 <div className="relative">
                                     <Input
                                         type="number"
                                         step="0.01"
                                         min="0"
-                                        max="4.0"
-                                        placeholder="e.g. 3.25"
+                                        max="10.0"
+                                        placeholder="e.g. 8.5"
                                         value={formData.gpa}
                                         onChange={(e) => setFormData({ ...formData, gpa: e.target.value })}
                                         className={`bg-white/10 border-white/20 text-white placeholder:text-gray-500 pr-14 ${formErrors.gpa ? 'border-red-500/50' : ''}`}
                                     />
-                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">/ 4.0</span>
+                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">/ 10.0</span>
                                 </div>
                                 {formErrors.gpa && <p className="text-red-400 text-xs">{formErrors.gpa}</p>}
                                 <div className="flex gap-1.5 mt-1">
-                                    {[1.0, 2.0, 2.5, 3.0, 3.5].map(v => (
+                                    {[4.0, 6.0, 7.5, 8.5, 9.5].map(v => (
                                         <button key={v} onClick={() => setFormData({ ...formData, gpa: v.toString() })}
                                             className="text-xs px-2 py-1 rounded bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white transition-colors">
                                             {v}

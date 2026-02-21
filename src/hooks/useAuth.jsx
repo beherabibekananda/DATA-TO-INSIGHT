@@ -136,16 +136,36 @@ export const AuthProvider = ({ children }) => {
     return { data, error };
   };
 
-  const adminSession = localStorage.getItem('admin_session');
+  const adminSessionStr = localStorage.getItem('admin_session');
   let isOTPAdmin = false;
-  if (adminSession) {
+  let adminData = null;
+
+  if (adminSessionStr) {
     try {
-      const session = JSON.parse(adminSession);
-      isOTPAdmin = session.expires_at > Date.now();
+      const session = JSON.parse(adminSessionStr);
+      if (session.expires_at > Date.now()) {
+        isOTPAdmin = true;
+        adminData = session.user;
+      } else {
+        localStorage.removeItem('admin_session');
+      }
     } catch (error) {
       localStorage.removeItem('admin_session');
     }
   }
+
+  // Effect to sync hardcoded admin to state if Supabase user is not present
+  useEffect(() => {
+    if (!user && adminData) {
+      setUser(adminData);
+      setProfile({
+        id: adminData.id,
+        email: adminData.email,
+        full_name: 'Administrator',
+        role: 'admin'
+      });
+    }
+  }, [user, adminData]);
 
   const value = {
     user,

@@ -39,6 +39,17 @@ const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const AdminLoginPage = () => {
+  const { isAdmin } = useAuth();
+
+  // Redirect if already logged in as admin
+  if (isAdmin) {
+    return <Navigate to="/adminDashboard" replace />;
+  }
+
+  return <AdminLogin onLoginSuccess={() => window.location.href = '/adminDashboard'} />;
+};
+
 const AppContent = () => {
   const { user, profile, loading } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
@@ -77,21 +88,11 @@ const AppContent = () => {
       {/* Admin Login Route */}
       <Route
         path="/admin-login"
-        element={
-          (() => {
-            const { isAdmin } = useAuth();
-
-            // Redirect if already logged in as admin
-            if (isAdmin) {
-              return <Navigate to="/adminDashboard" replace />;
-            }
-
-            return <AdminLogin onLoginSuccess={() => window.location.href = '/adminDashboard'} />;
-          })()
-        }
+        element={<AdminLoginPage />}
       />
 
       {/* Protected Admin Routes */}
+
       <Route
         path="/adminDashboard"
         element={
