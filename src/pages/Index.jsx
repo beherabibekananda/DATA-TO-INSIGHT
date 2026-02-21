@@ -9,8 +9,8 @@ import DepartmentAnalytics from '../components/DepartmentAnalytics';
 import InterventionPanel from '../components/InterventionPanel';
 import UserDashboard from '../components/UserDashboard';
 import UserRequestsView from '../components/UserRequestsView';
-import PublicStudentView from '../components/PublicStudentView';
 import DropoutPrediction from '../components/DropoutPrediction';
+import UCIDataAnalytics from '../components/UCIDataAnalytics';
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
@@ -46,6 +46,8 @@ const Index = () => {
         return <InterventionPanel />;
       case 'requests':
         return <UserRequestsView />;
+      case 'uci-analytics':
+        return <UCIDataAnalytics />;
       default:
         return <Dashboard />;
     }

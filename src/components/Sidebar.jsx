@@ -9,7 +9,7 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Brain
+  Database
 } from 'lucide-react';
 
 const Sidebar = ({ activeSection, setActiveSection }) => {
@@ -19,6 +19,7 @@ const Sidebar = ({ activeSection, setActiveSection }) => {
     { id: 'dashboard', label: 'Dashboard', icon: BarChart },
     { id: 'risk-analysis', label: 'Risk Analysis', icon: AlertTriangle },
     { id: 'dropout-prediction', label: 'Dropout Checker', icon: Brain },
+    { id: 'uci-analytics', label: 'Dataset Analytics', icon: Database },
     { id: 'students', label: 'Students', icon: Users },
     { id: 'profile', label: 'Profile View', icon: User },
     { id: 'departments', label: 'Departments', icon: BookOpen },

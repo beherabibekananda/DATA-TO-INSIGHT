@@ -25,84 +25,97 @@ const UploadStudentsDataFile = () => {
     setUploadStatus('parsing');
 
     try {
-      const text = await file.text();
-      const lines = text.split('\n').filter(line => line.trim());
-      
-      if (lines.length < 2) {
-        throw new Error('File must contain at least a header row and one data row');
-      }
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          const bstr = evt.target.result;
+          const XLSX = await import('xlsx');
+          const wb = XLSX.read(bstr, { type: 'binary' });
+          const wsname = wb.SheetNames[0];
+          const ws = wb.Sheets[wsname];
+          const rawData = XLSX.utils.sheet_to_json(ws);
 
-      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-      const students = [];
-      
-      for (let i = 1; i < lines.length; i++) {
-        if (lines[i].trim()) {
-          const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-          const student = {};
-          
-          headers.forEach((header, index) => {
-            const value = values[index] || '';
-            switch (header.toLowerCase()) {
-              case 'student_id':
-                student.student_id = value;
-                break;
-              case 'name':
-                student.name = value;
-                break;
-              case 'email':
-                student.email = value;
-                break;
-              case 'department':
-                student.department = value;
-                break;
-              case 'year':
-                student.year = parseInt(value) || 1;
-                break;
-              case 'gpa':
-                student.gpa = parseFloat(value) || null;
-                break;
-              case 'attendance_rate':
-                student.attendance_rate = parseFloat(value) || null;
-                break;
-              case 'engagement_score':
-                student.engagement_score = parseFloat(value) || null;
-                break;
-              case 'risk_level':
-                student.risk_level = value.toLowerCase() || 'low';
-                break;
-              default:
-                // Skip unknown columns
-                break;
-            }
-          });
-          
-          if (student.student_id && student.name && student.department) {
-            students.push(student);
+          if (rawData.length === 0) {
+            throw new Error('File is empty or invalid');
           }
+
+          // Smart Mapping for UCI Dataset vs Standard Format
+          const students = rawData.map((row, index) => {
+            const mapped = {};
+
+            // 1. Identification
+            mapped.student_id = row.student_id || row.id || `STU-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            mapped.name = row.name || `Student ${index + 1}`;
+            mapped.email = row.email || `${mapped.student_id.toLowerCase()}@university.edu`;
+
+            // 2. Department & Year
+            mapped.department = row.department || (row.school === 'GP' ? 'Gabriel Pereira' : row.school === 'MS' ? 'Mouzinho da Silveira' : 'General Education');
+            mapped.year = parseInt(row.year || row.age % 4 || 1);
+
+            // 3. Performance (Scaling UCI G3 (0-20) to GPA (0-4))
+            if (row.G3 !== undefined) {
+              mapped.gpa = parseFloat(((row.G3 / 20) * 4).toFixed(2));
+            } else {
+              mapped.gpa = parseFloat(row.gpa) || 0;
+            }
+
+            // 4. Attendance (Mapping UCI absences to attendance rate)
+            if (row.absences !== undefined) {
+              // Assume 100 max possible absences for scaling
+              mapped.attendance_rate = Math.max(0, 100 - row.absences);
+            } else {
+              mapped.attendance_rate = parseFloat(row.attendance_rate) || 0;
+            }
+
+            // 5. Engagement (Mapping UCI studytime/failures to engagement)
+            if (row.studytime !== undefined) {
+              mapped.engagement_score = Math.min(100, (row.studytime * 25) - (row.failures * 10));
+            } else {
+              mapped.engagement_score = parseFloat(row.engagement_score) || 0;
+            }
+
+            // 6. Risk Level
+            if (mapped.gpa < 2.0 || mapped.attendance_rate < 50) {
+              mapped.risk_level = 'high';
+            } else if (mapped.gpa < 3.0 || mapped.attendance_rate < 75) {
+              mapped.risk_level = 'medium';
+            } else {
+              mapped.risk_level = 'low';
+            }
+
+            // Store extra UCI data as JSON if needed (optional extension)
+            mapped.metadata = {
+              uci_data: {
+                sex: row.sex,
+                address: row.address,
+                romantic: row.romantic,
+                alcohol_daily: row.Dalc,
+                alcohol_weekly: row.Walc,
+                health: row.health
+              }
+            };
+
+            return mapped;
+          });
+
+          setPreviewData(students);
+          setUploadStatus('preview');
+          toast({
+            title: "File Successfully Parsed",
+            description: `Auto-mapped ${students.length} records. Detected ${rawData[0].G3 ? 'UCI Dataset' : 'Standard'} format.`,
+          });
+        } catch (err) {
+          console.error('Inner parsing error:', err);
+          toast({ title: "Parsing Error", description: err.message, variant: "destructive" });
+          setUploadStatus('error');
+        } finally {
+          setUploading(false);
         }
-      }
-
-      if (students.length === 0) {
-        throw new Error('No valid student records found. Ensure file has student_id, name, and department columns.');
-      }
-
-      setPreviewData(students);
-      setUploadStatus('preview');
-      
-      toast({
-        title: "File Parsed Successfully",
-        description: `Found ${students.length} valid student records`,
-      });
-
+      };
+      reader.readAsBinaryString(file);
     } catch (error) {
-      console.error('File parsing error:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to parse file",
-        variant: "destructive",
-      });
+      console.error('File reading error:', error);
       setUploadStatus('error');
-    } finally {
       setUploading(false);
     }
   };
@@ -126,7 +139,7 @@ const UploadStudentsDataFile = () => {
       setUploadStatus('success');
       setPreviewData([]);
       setFileName('');
-      
+
       // Reset file input
       const fileInput = document.getElementById('file-upload');
       if (fileInput) fileInput.value = '';
@@ -204,13 +217,13 @@ const UploadStudentsDataFile = () => {
                   <p className="mt-4 text-blue-300">Selected: {fileName}</p>
                 )}
               </div>
-              
+
               {/* Expected Format */}
               <div className="bg-black/20 rounded-lg p-4">
                 <h3 className="font-medium mb-2 text-white">Expected CSV Format:</h3>
                 <code className="block text-xs text-gray-300 overflow-x-auto">
-                  student_id,name,email,department,year,gpa,attendance_rate,engagement_score,risk_level<br/>
-                  ST001,John Doe,john@example.com,Computer Science,2,3.45,85,78,low<br/>
+                  student_id,name,email,department,year,gpa,attendance_rate,engagement_score,risk_level<br />
+                  ST001,John Doe,john@example.com,Computer Science,2,3.45,85,78,low<br />
                   ST002,Jane Smith,jane@example.com,Mathematics,3,3.89,92,85,low
                 </code>
               </div>
@@ -287,7 +300,7 @@ const UploadStudentsDataFile = () => {
                   </p>
                 )}
               </div>
-              
+
               <div className="flex gap-4">
                 <Button
                   onClick={confirmUpload}
