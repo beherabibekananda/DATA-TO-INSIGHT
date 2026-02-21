@@ -166,47 +166,49 @@ const UploadStudentsDataFile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#02040a] p-6 relative overflow-hidden">
+    <div className="min-h-screen bg-background p-6 relative overflow-hidden">
       {/* Dynamic Background Effects */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full"></div>
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/5 blur-[120px] rounded-full"></div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex items-center gap-4 mb-8">
           <Button
             onClick={() => navigate('/adminDashboard')}
-            className="bg-white/[0.03] border border-white/5 text-white/60 hover:text-white hover:bg-white/[0.05] rounded-xl px-5 transition-all"
+            className="border border-border text-muted-foreground hover:text-foreground hover:bg-muted rounded-2xl px-5 transition-all font-black uppercase tracking-widest text-[10px] h-11 bg-card"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Control Center
+            Admin Dashboard
           </Button>
-          <div className="h-10 w-[1px] bg-white/5"></div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Data Injection Terminal</h1>
+          <div className="h-10 w-[1px] bg-border"></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tighter uppercase">Upload Student Data</h1>
         </div>
 
         {/* Upload Section */}
-        <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white mb-8 overflow-hidden">
+        <Card className="bg-card backdrop-blur-3xl border-border text-foreground mb-8 overflow-hidden shadow-xl">
           <div className="h-1 w-full bg-gradient-to-r from-primary to-secondary"></div>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-lg font-bold">
-              <Upload className="h-5 w-5 text-primary" />
-              Dataset Synchronizer
+          <CardHeader className="p-8 border-b border-border bg-muted/30">
+            <CardTitle className="flex items-center gap-3 text-xl font-black uppercase tracking-tighter">
+              <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                <Upload className="h-5 w-5" />
+              </div>
+              Upload Student Files
             </CardTitle>
-            <CardDescription className="text-white/40 uppercase tracking-widest text-[10px] font-bold">
-              Secure payload delivery for academic analysis
+            <CardDescription className="text-muted-foreground uppercase tracking-widest text-[10px] font-black mt-2">
+              Securely import student records to the system
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <div className="space-y-8">
               {/* File Upload Area */}
-              <div className="border-2 border-dashed border-white/10 rounded-3xl p-12 text-center group hover:border-primary/40 transition-all bg-white/[0.01]">
+              <div className="border-2 border-dashed border-border rounded-3xl p-12 text-center group hover:border-primary/40 transition-all bg-muted/20">
                 <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <FileSpreadsheet className="h-10 w-10 text-primary" />
                 </div>
-                <p className="text-white font-bold text-xl mb-2">
-                  Drop Dataset Payload Here
+                <p className="text-foreground font-black text-xl mb-2 uppercase tracking-tight">
+                  Drop your file here
                 </p>
-                <p className="text-white/30 text-sm mb-8">Support for CSV, XLSX, and UCI standard formats</p>
+                <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-8">Supports CSV, XLSX, and standard data formats</p>
                 <input
                   type="file"
                   accept=".csv,.xlsx,.xls"
@@ -217,14 +219,14 @@ const UploadStudentsDataFile = () => {
                 />
                 <label
                   htmlFor="file-upload"
-                  className="cursor-pointer inline-flex items-center px-8 py-4 bg-primary hover:bg-primary/90 rounded-2xl transition-all text-white font-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
+                  className="cursor-pointer inline-flex items-center px-8 py-4 bg-primary hover:bg-primary/90 rounded-2xl transition-all text-white font-black shadow-lg shadow-primary/10 hover:scale-105 active:scale-95 uppercase tracking-widest text-[10px]"
                 >
-                  {uploading ? 'Processing Neural Sync...' : 'Browse Local Files'}
+                  {uploading ? 'Processing File...' : 'Select File'}
                 </label>
                 {fileName && (
-                  <div className="mt-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
-                    <CheckCircle className="w-3 h-3" />
-                    Target: {fileName}
+                  <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest">
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    File: {fileName}
                   </div>
                 )}
               </div>
@@ -233,21 +235,21 @@ const UploadStudentsDataFile = () => {
               {uploadStatus === 'parsing' && (
                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 animate-pulse">
                   <Activity className="h-5 w-5 text-primary" />
-                  <p className="text-primary text-sm font-bold uppercase tracking-widest">Heuristic Parsing in Progress...</p>
+                  <p className="text-primary text-[10px] font-black uppercase tracking-widest">Reading file data...</p>
                 </div>
               )}
 
               {uploadStatus === 'uploading' && (
                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-secondary/10 border border-secondary/20 animate-pulse">
                   <Upload className="h-5 w-5 text-secondary" />
-                  <p className="text-secondary text-sm font-bold uppercase tracking-widest">Injecting Data to Mainframe...</p>
+                  <p className="text-secondary text-[10px] font-black uppercase tracking-widest">Saving to database...</p>
                 </div>
               )}
 
               {uploadStatus === 'success' && (
                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-success/10 border border-success/20">
                   <CheckCircle className="h-5 w-5 text-success" />
-                  <p className="text-success text-sm font-bold uppercase tracking-widest">Synchronization Complete</p>
+                  <p className="text-success text-[10px] font-black uppercase tracking-widest">Upload Successful</p>
                 </div>
               )}
             </div>
@@ -256,38 +258,38 @@ const UploadStudentsDataFile = () => {
 
         {/* Preview Section */}
         {previewData.length > 0 && uploadStatus === 'preview' && (
-          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold">Data Preview ({previewData.length} records found)</CardTitle>
-              <CardDescription className="text-white/40 uppercase tracking-widest text-[10px] font-bold">
-                Review extracted payload structure
+          <Card className="bg-card backdrop-blur-3xl border-border text-foreground shadow-xl">
+            <CardHeader className="p-8 border-b border-border bg-muted/30">
+              <CardTitle className="text-xl font-black uppercase tracking-tighter">Preview ({previewData.length} students found)</CardTitle>
+              <CardDescription className="text-muted-foreground uppercase tracking-widest text-[10px] font-black mt-2">
+                Check the data before confirming upload
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto mb-8 rounded-2xl border border-white/5 bg-white/[0.01]">
+            <CardContent className="p-8">
+              <div className="overflow-x-auto mb-8 rounded-2xl border border-border bg-muted/20">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-white/5 bg-white/[0.02]">
-                      <th className="text-left p-4 text-white font-bold">Student ID</th>
-                      <th className="text-left p-4 text-white font-bold">Name</th>
-                      <th className="text-left p-4 text-white font-bold">Sector</th>
-                      <th className="text-left p-4 text-white font-bold">Cycle</th>
-                      <th className="text-left p-4 text-white font-bold">GPA</th>
-                      <th className="text-left p-4 text-white font-bold">Risk Status</th>
+                    <tr className="border-b border-border bg-muted/30">
+                      <th className="text-left p-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">ID</th>
+                      <th className="text-left p-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Name</th>
+                      <th className="text-left p-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Department</th>
+                      <th className="text-left p-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Year</th>
+                      <th className="text-left p-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">GPA</th>
+                      <th className="text-left p-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Risk Level</th>
                     </tr>
                   </thead>
                   <tbody>
                     {previewData.slice(0, 10).map((student, index) => (
-                      <tr key={index} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
-                        <td className="p-4 text-white/60 font-mono text-xs">{student.student_id}</td>
-                        <td className="p-4 text-white font-semibold">{student.name}</td>
-                        <td className="p-4 text-white/40">{student.department}</td>
-                        <td className="p-4 text-white/40 uppercase tracking-tighter text-xs">Year {student.year}</td>
+                      <tr key={index} className="border-b border-border hover:bg-muted/30 transition-colors">
+                        <td className="p-4 text-muted-foreground font-mono text-xs">{student.student_id}</td>
+                        <td className="p-4 text-foreground font-bold">{student.name}</td>
+                        <td className="p-4 text-muted-foreground">{student.department}</td>
+                        <td className="p-4 text-muted-foreground uppercase tracking-tighter text-xs">Year {student.year}</td>
                         <td className="p-4 text-primary font-bold">{student.gpa || 'N/A'}</td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest border ${student.risk_level === 'high' ? 'bg-destructive/10 text-destructive border-destructive/20' :
-                              student.risk_level === 'medium' ? 'bg-warning/10 text-warning border-warning/20' :
-                                'bg-success/10 text-success border-success/20'
+                            student.risk_level === 'medium' ? 'bg-warning/10 text-warning border-warning/20' :
+                              'bg-success/10 text-success border-success/20'
                             }`}>
                             {student.risk_level}
                           </span>
@@ -301,16 +303,16 @@ const UploadStudentsDataFile = () => {
               <div className="flex gap-4">
                 <Button
                   onClick={confirmUpload}
-                  className="bg-primary text-white font-black px-8 py-6 rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                  className="bg-primary text-white font-black px-8 py-6 rounded-2xl shadow-lg shadow-primary/10 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-[10px]"
                   disabled={uploading}
                 >
-                  {uploading ? 'Processing...' : 'Confirm Synchronization'}
+                  {uploading ? 'Processing...' : 'Confirm Upload'}
                 </Button>
                 <Button
                   onClick={resetUpload}
-                  className="bg-white/[0.03] border border-white/5 text-white/60 hover:text-white hover:bg-white/[0.05] rounded-2xl px-6 py-6 transition-all"
+                  className="border border-border text-muted-foreground hover:text-foreground hover:bg-muted rounded-2xl px-6 py-6 transition-all font-black uppercase tracking-widest text-[10px] bg-card"
                 >
-                  Abort Transmission
+                  Cancel
                 </Button>
               </div>
             </CardContent>
@@ -322,3 +324,4 @@ const UploadStudentsDataFile = () => {
 };
 
 export default UploadStudentsDataFile;
+

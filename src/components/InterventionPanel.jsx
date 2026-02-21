@@ -122,7 +122,7 @@ const InterventionPanel = () => {
       case 'active': return 'bg-success/10 text-success border-success/20';
       case 'planning': return 'bg-warning/10 text-warning border-warning/20';
       case 'completed': return 'bg-primary/10 text-primary border-primary/20';
-      default: return 'bg-white/5 text-white/40 border-white/10';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -154,43 +154,43 @@ const InterventionPanel = () => {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
             <Target className="w-3.5 h-3.5 text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Mission Strategy</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Intervention Strategy</span>
           </div>
-          <h2 className="text-4xl font-black text-white tracking-tighter uppercase">Intervention Hub</h2>
-          <p className="text-white/20 uppercase tracking-[0.2em] text-[10px] font-black mt-1">Heuristic remediation & support protocols</p>
+          <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase">Student Interventions</h2>
+          <p className="text-muted-foreground uppercase tracking-[0.2em] text-[10px] font-black mt-1">Action plans and student support programs</p>
         </div>
         <div className="flex gap-3">
-          <Button className="bg-white/[0.03] border border-white/5 text-white/40 hover:text-white rounded-xl px-6 h-11 text-[10px] font-black uppercase tracking-widest transition-all">
+          <Button variant="outline" className="bg-muted border border-border text-muted-foreground hover:text-foreground rounded-xl px-6 h-11 text-[10px] font-black uppercase tracking-widest transition-all">
             <Clock className="w-4 h-4 mr-2" />
             History
           </Button>
           <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95">
             <Brain className="w-4 h-4 mr-2" />
-            AI Synthesize
+            AI Insights
           </Button>
         </div>
       </div>
 
-      {/* Summary Matrix */}
+      {/* Summary Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Active Protocols', value: interventions.filter(i => i.status === 'active').length, icon: Target, color: 'text-success', bg: 'bg-success/10' },
-          { label: 'Entities Protected', value: interventions.reduce((sum, i) => sum + i.studentsAffected, 0), icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
-          { label: 'Success Velocity', value: `${interventions.length > 0 ? Math.round(interventions.reduce((sum, i) => sum + i.effectiveness, 0) / interventions.length) : 0}%`, icon: Zap, color: 'text-warning', bg: 'bg-warning/10' },
-          { label: 'AI Directives', value: aiInsights?.insights.length || 0, icon: MessageSquare, color: 'text-secondary', bg: 'bg-secondary/10' },
+          { label: 'Active Programs', value: interventions.filter(i => i.status === 'active').length, icon: Target, color: 'text-success', bg: 'bg-success/10' },
+          { label: 'Students Supported', value: interventions.reduce((sum, i) => sum + i.studentsAffected, 0), icon: Users, color: 'text-primary', bg: 'bg-primary/10' },
+          { label: 'Average Success Rate', value: `${interventions.length > 0 ? Math.round(interventions.reduce((sum, i) => sum + i.effectiveness, 0) / interventions.length) : 0}%`, icon: Zap, color: 'text-warning', bg: 'bg-warning/10' },
+          { label: 'AI Suggestions', value: aiInsights?.insights.length || 0, icon: MessageSquare, color: 'text-secondary', bg: 'bg-secondary/10' },
         ].map((stat, i) => (
-          <Card key={i} className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden group hover:border-primary/20 transition-all">
-            <div className={`h-1 w-full bg-white/5 group-hover:${stat.bg.replace('/10', '')} transition-colors`}></div>
+          <Card key={i} className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden group hover:border-primary/20 transition-all shadow-sm">
+            <div className={`h-1 w-full bg-border group-hover:${stat.bg.replace('/10', '')} transition-colors`}></div>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform shadow-sm`}>
                   <stat.icon className="w-5 h-5" />
                 </div>
-                <Info className="w-4 h-4 text-white/10 group-hover:text-white/30" />
+                <Info className="w-4 h-4 text-muted-foreground/30 group-hover:text-muted-foreground" />
               </div>
               <div className="space-y-1">
                 <p className="text-3xl font-black tracking-tighter">{stat.value}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/20">{stat.label}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -199,65 +199,65 @@ const InterventionPanel = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Intervention Constructor */}
-        <Card className="lg:col-span-2 bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
-          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+        <Card className="lg:col-span-2 bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-border bg-muted/30">
             <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
               <Send className="w-6 h-6 text-primary" />
-              Protocol Designer
+              Create New Program
             </CardTitle>
-            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Design heuristic support frameworks for academic nodes</CardDescription>
+            <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">Create new support programs for students</CardDescription>
           </CardHeader>
           <CardContent className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Protocol Designation</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Program Title</label>
                   <Input
                     value={newIntervention.title}
                     onChange={(e) => setNewIntervention({ ...newIntervention, title: e.target.value })}
-                    placeholder="e.g. STEM Recovery Alpha"
-                    className="bg-white/[0.03] border-white/10 text-white rounded-xl h-12 focus:ring-1 focus:ring-primary/40 placeholder:text-white/10"
+                    placeholder="e.g. STEM Academic Support"
+                    className="bg-muted border-border text-foreground rounded-xl h-12 focus:ring-1 focus:ring-primary/40 placeholder:text-muted-foreground/30"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Target Sector</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Target Group</label>
                     <select
                       value={newIntervention.targetGroup}
                       onChange={(e) => setNewIntervention({ ...newIntervention, targetGroup: e.target.value })}
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-xl h-12 px-4 text-xs text-white uppercase font-black outline-none focus:ring-1 focus:ring-primary/40 appearance-none"
+                      className="w-full bg-muted border border-border rounded-xl h-12 px-4 text-xs text-foreground uppercase font-black outline-none focus:ring-1 focus:ring-primary/40 appearance-none"
                     >
-                      <option value="high-risk" className="bg-[#0c0d12]">Critical Variance</option>
-                      <option value="medium-risk" className="bg-[#0c0d12]">Moderate Divergence</option>
-                      <option value="low-risk" className="bg-[#0c0d12]">Stable Nodes</option>
-                      <option value="all" className="bg-[#0c0d12]">Global Network</option>
+                      <option value="high-risk" className="bg-background">High Risk</option>
+                      <option value="medium-risk" className="bg-background">Medium Risk</option>
+                      <option value="low-risk" className="bg-background">Low Risk</option>
+                      <option value="all" className="bg-background">All Students</option>
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Protocol Type</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Program Type</label>
                     <select
                       value={newIntervention.type}
                       onChange={(e) => setNewIntervention({ ...newIntervention, type: e.target.value })}
-                      className="w-full bg-white/[0.03] border border-white/10 rounded-xl h-12 px-4 text-xs text-white uppercase font-black outline-none focus:ring-1 focus:ring-primary/40 appearance-none"
+                      className="w-full bg-muted border border-border rounded-xl h-12 px-4 text-xs text-foreground uppercase font-black outline-none focus:ring-1 focus:ring-primary/40 appearance-none"
                     >
-                      <option value="academic" className="bg-[#0c0d12]">Academic Sync</option>
-                      <option value="behavioral" className="bg-[#0c0d12]">Behavioral Correction</option>
-                      <option value="wellness" className="bg-[#0c0d12]">Resilience Wellness</option>
-                      <option value="financial" className="bg-[#0c0d12]">Resource Subsidy</option>
+                      <option value="academic" className="bg-background">Academic</option>
+                      <option value="behavioral" className="bg-background">Behavioral</option>
+                      <option value="wellness" className="bg-background">Wellness</option>
+                      <option value="financial" className="bg-background">Financial Aid</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Threat Priority</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Priority Level</label>
                   <div className="flex gap-2">
                     {['low', 'medium', 'high', 'critical'].map(p => (
                       <button
                         key={p}
                         onClick={() => setNewIntervention({ ...newIntervention, priority: p })}
-                        className={`flex-1 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${newIntervention.priority === p ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-white/[0.03] border-white/5 text-white/40 hover:text-white hover:bg-white/[0.05]'}`}
+                        className={`flex-1 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${newIntervention.priority === p ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-muted border-border text-muted-foreground hover:text-foreground hover:bg-muted/80'}`}
                       >
                         {p}
                       </button>
@@ -268,12 +268,12 @@ const InterventionPanel = () => {
 
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Mission Parameters</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Program Details</label>
                   <Textarea
                     value={newIntervention.description}
                     onChange={(e) => setNewIntervention({ ...newIntervention, description: e.target.value })}
-                    placeholder="Define remediation steps & objectives..."
-                    className="bg-white/[0.03] border-white/10 text-white rounded-xl h-[124px] focus:ring-1 focus:ring-primary/40 placeholder:text-white/10 resize-none p-4 text-sm"
+                    placeholder="Describe the goals and steps of this program..."
+                    className="bg-muted border-border text-foreground rounded-xl h-[124px] focus:ring-1 focus:ring-primary/40 placeholder:text-muted-foreground/30 resize-none p-4 text-sm"
                   />
                 </div>
 
@@ -282,7 +282,7 @@ const InterventionPanel = () => {
                   disabled={!newIntervention.title || !newIntervention.description}
                   className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl h-14 font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-98 disabled:opacity-20"
                 >
-                  Initiate Deployment
+                  Launch Program
                   <ArrowRight className="w-4 h-4 ml-3" />
                 </Button>
               </div>
@@ -290,37 +290,37 @@ const InterventionPanel = () => {
           </CardContent>
         </Card>
 
-        {/* AI Directives */}
-        <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
-          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+        {/* AI Recommendations */}
+        <Card className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-border bg-muted/30">
             <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
               <Zap className="w-6 h-6 text-warning" />
-              Machine Directive
+              AI Recommendations
             </CardTitle>
-            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Heuristic-optimized remediation targets</CardDescription>
+            <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">AI-generated suggestions for student support</CardDescription>
           </CardHeader>
           <CardContent className="p-0 max-h-[460px] overflow-y-auto custom-scrollbar">
-            <div className="divide-y divide-white/5">
+            <div className="divide-y divide-border">
               {aiInsights?.insights.map((insight, index) => (
-                <div key={index} className="p-6 group hover:bg-white/[0.02] transition-colors relative">
+                <div key={index} className="p-6 group hover:bg-muted/50 transition-colors relative">
                   <div className={`absolute left-0 top-0 bottom-0 w-1 ${insight.severity === 'critical' ? 'bg-destructive' :
-                      insight.severity === 'high' ? 'bg-orange-500' :
-                        insight.severity === 'positive' ? 'bg-success' :
-                          'bg-primary'
+                    insight.severity === 'high' ? 'bg-orange-500' :
+                      insight.severity === 'positive' ? 'bg-success' :
+                        'bg-primary'
                     } opacity-20 group-hover:opacity-100 transition-opacity`}></div>
                   <div className="flex justify-between items-start mb-3">
                     <h4 className="text-sm font-black tracking-tight leading-tight">{insight.title}</h4>
                     <Badge className={`rounded-lg px-2 py-0.5 text-[8px] font-black uppercase tracking-widest border ${insight.severity === 'critical' ? 'bg-destructive/10 text-destructive border-destructive/20' :
-                        insight.severity === 'high' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
-                          'bg-primary/10 text-primary border-primary/20'
+                      insight.severity === 'high' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
+                        'bg-primary/10 text-primary border-primary/20'
                       }`}>
                       {insight.severity}
                     </Badge>
                   </div>
-                  <p className="text-white/30 text-[10px] font-bold uppercase tracking-tight mb-4 leading-relaxed">{insight.description}</p>
+                  <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-tight mb-4 leading-relaxed">{insight.description}</p>
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] font-black text-primary uppercase tracking-widest">💡 Recommended Action</span>
-                    <button className="text-[10px] font-bold text-white/40 hover:text-white transition-colors flex items-center gap-1 group/btn">
+                    <button className="text-[10px] font-bold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 group/btn">
                       Auto-Draft <ChevronRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                   </div>
@@ -331,20 +331,20 @@ const InterventionPanel = () => {
         </Card>
       </div>
 
-      {/* Active Frameworks */}
-      <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
-        <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+      {/* Active Programs */}
+      <Card className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl">
+        <CardHeader className="p-8 border-b border-border bg-muted/30">
           <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
             <Target className="w-6 h-6 text-success" />
-            Operational Protocols
+            Current Programs
           </CardTitle>
-          <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Live & scheduled remediation frameworks</CardDescription>
+          <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">Overview of active and planned support programs</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {interventions.map((intervention) => (
-              <div key={intervention.id} className="group p-6 rounded-2xl bg-white/[0.01] border border-white/5 hover:border-primary/40 transition-all relative overflow-hidden">
-                {/* Background Spark */}
+              <div key={intervention.id} className="group p-6 rounded-2xl bg-muted/30 border border-border hover:border-primary/40 transition-all relative overflow-hidden shadow-sm">
+                {/* Background Glow */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl -mr-16 -mt-16 group-hover:bg-primary/10 transition-all"></div>
 
                 <div className="relative z-10">
@@ -360,33 +360,33 @@ const InterventionPanel = () => {
                     </div>
                   </div>
 
-                  <p className="text-white/20 text-[10px] font-bold uppercase tracking-tight mb-6 leading-relaxed line-clamp-2">{intervention.description}</p>
+                  <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-tight mb-6 leading-relaxed line-clamp-2">{intervention.description}</p>
 
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                      <p className="text-[8px] font-black text-white/10 uppercase tracking-widest mb-1">Impact Group</p>
-                      <p className="text-xs font-bold text-white/60 capitalize">{intervention.targetGroup.replace('-', ' ')}</p>
+                    <div className="p-3 rounded-xl bg-background border border-border shadow-sm">
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Target Group</p>
+                      <p className="text-xs font-bold text-foreground/60 capitalize">{intervention.targetGroup.replace('-', ' ')}</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                      <p className="text-[8px] font-black text-white/10 uppercase tracking-widest mb-1">Efficiency Delta</p>
+                    <div className="p-3 rounded-xl bg-background border border-border shadow-sm">
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Success Rate</p>
                       <p className={`text-xs font-black ${intervention.effectiveness > 80 ? 'text-success' :
-                          intervention.effectiveness > 60 ? 'text-warning' :
-                            'text-destructive'
+                        intervention.effectiveness > 60 ? 'text-warning' :
+                          'text-destructive'
                         }`}>{intervention.effectiveness}%</p>
                     </div>
                   </div>
 
-                  {/* Progressive Meter */}
+                  {/* Program Progress */}
                   <div className="space-y-2 mb-6">
                     <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
-                      <span className="text-white/20">Mission Progress</span>
-                      <span className="text-white">{intervention.effectiveness}% Recovery</span>
+                      <span className="text-muted-foreground">Program Progress</span>
+                      <span className="text-foreground">{intervention.effectiveness}% Success</span>
                     </div>
-                    <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden p-[1px] border border-white/5">
+                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden p-[1px] border border-border">
                       <div
                         className={`h-full rounded-full transition-all duration-[2000ms] ${intervention.effectiveness > 80 ? 'bg-gradient-to-r from-success to-emerald-400' :
-                            intervention.effectiveness > 60 ? 'bg-gradient-to-r from-warning to-orange-400' :
-                              'bg-gradient-to-r from-destructive to-red-400'
+                          intervention.effectiveness > 60 ? 'bg-gradient-to-r from-warning to-orange-400' :
+                            'bg-gradient-to-r from-destructive to-red-400'
                           }`}
                         style={{ width: `${intervention.effectiveness}%` }}
                       >
@@ -396,8 +396,8 @@ const InterventionPanel = () => {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1 bg-white/[0.02] border-white/10 text-white/40 hover:text-white rounded-xl h-10 text-[9px] font-black uppercase tracking-widest transition-all">
-                      Diagnostics
+                    <Button variant="outline" className="flex-1 bg-background border-border text-muted-foreground hover:text-foreground rounded-xl h-10 text-[9px] font-black uppercase tracking-widest transition-all">
+                      View Report
                     </Button>
                     <Button className="flex-1 bg-primary hover:bg-primary/90 text-white rounded-xl h-10 text-[9px] font-black uppercase tracking-widest shadow-lg shadow-primary/10">
                       Sync
@@ -410,36 +410,36 @@ const InterventionPanel = () => {
         </CardContent>
       </Card>
 
-      {/* Persistence Log */}
-      <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl pb-20">
-        <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+      {/* Activity Log */}
+      <Card className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl pb-20">
+        <CardHeader className="p-8 border-b border-border bg-muted/30">
           <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
             <AlertTriangle className="w-6 h-6 text-warning" />
-            Strategic Persistence Log
+            Activity Log
           </CardTitle>
-          <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Real-time telemetry & network alerts</CardDescription>
+          <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">Recent updates and system alerts</CardDescription>
         </CardHeader>
         <CardContent className="p-8">
           <div className="space-y-3">
             {notifications.map((notification) => (
-              <div key={notification.id} className="group flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
+              <div key={notification.id} className="group flex items-center justify-between p-4 rounded-2xl bg-muted/50 border border-border hover:bg-muted/80 transition-all shadow-sm">
                 <div className="flex items-center gap-5">
-                  <div className={`p-4 rounded-xl ${notification.type === 'alert' ? 'bg-destructive/10 text-destructive' :
-                      notification.type === 'success' ? 'bg-success/10 text-success' :
-                        'bg-primary/10 text-primary'
+                  <div className={`p-4 rounded-xl shadow-sm ${notification.type === 'alert' ? 'bg-destructive/10 text-destructive' :
+                    notification.type === 'success' ? 'bg-success/10 text-success' :
+                      'bg-primary/10 text-primary'
                     } group-hover:scale-110 transition-transform`}>
                     {notification.type === 'alert' ? <AlertTriangle className="w-5 h-5" /> :
                       notification.type === 'success' ? <CheckCircle className="w-5 h-5" /> :
                         <Clock className="w-5 h-5" />}
                   </div>
                   <div>
-                    <p className="text-sm font-bold tracking-tight text-white group-hover:text-primary transition-colors">{notification.message}</p>
-                    <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em] mt-1">
-                      TELEMETRY SYNC: {new Date(notification.timestamp).toLocaleTimeString()}
+                    <p className="text-sm font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">{notification.message}</p>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-1 text-opacity-50">
+                      LAST UPDATE: {new Date(notification.timestamp).toLocaleTimeString()}
                     </p>
                   </div>
                 </div>
-                <Button className="bg-white/[0.05] hover:bg-white/10 text-white/40 hover:text-white rounded-xl px-4 h-9 text-[9px] font-black uppercase tracking-widest transition-all">
+                <Button variant="outline" className="bg-background border-border hover:bg-muted text-muted-foreground hover:text-foreground rounded-xl px-4 h-9 text-[9px] font-black uppercase tracking-widest transition-all">
                   Detail
                 </Button>
               </div>

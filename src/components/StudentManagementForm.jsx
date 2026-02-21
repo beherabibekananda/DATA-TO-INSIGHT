@@ -102,13 +102,13 @@ const StudentManagementForm = ({ onStudentAdded }) => {
       const text = await file.text();
       const lines = text.split('\n');
       const headers = lines[0].split(',').map(h => h.trim());
-      
+
       const students = [];
       for (let i = 1; i < lines.length; i++) {
         if (lines[i].trim()) {
           const values = lines[i].split(',').map(v => v.trim());
           const student = {};
-          
+
           headers.forEach((header, index) => {
             switch (header.toLowerCase()) {
               case 'student_id':
@@ -140,7 +140,7 @@ const StudentManagementForm = ({ onStudentAdded }) => {
                 break;
             }
           });
-          
+
           if (student.student_id && student.name && student.department) {
             students.push(student);
           }
@@ -176,71 +176,77 @@ const StudentManagementForm = ({ onStudentAdded }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-in fade-in duration-500">
       {/* Manual Student Entry Form */}
-      <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Plus className="h-5 w-5" />
+      <Card className="bg-card backdrop-blur-3xl border-border text-foreground shadow-xl overflow-hidden">
+        <CardHeader className="p-8 border-b border-border bg-muted/30">
+          <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-primary/10 text-primary">
+              <Plus className="h-5 w-5" />
+            </div>
             Add New Student
           </CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardDescription className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mt-2">
             Manually add student information to the database
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="p-8">
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label className="text-white">Student ID *</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Student ID *</Label>
               <Input
                 name="student_id"
                 value={formData.student_id}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="e.g. STU001"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Name *</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Name *</Label>
               <Input
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="Enter full name"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Email</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email</Label>
               <Input
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="student@university.edu"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Department *</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Department *</Label>
               <Input
                 name="department"
                 value={formData.department}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="e.g. Computer Science"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Year *</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Year *</Label>
               <Select onValueChange={(value) => handleSelectChange('year', value)}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="h-14 bg-muted border-border text-foreground rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4">
                   <SelectValue placeholder="Select year" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-card border-border text-foreground rounded-2xl shadow-2xl">
                   <SelectItem value="1">1st Year</SelectItem>
                   <SelectItem value="2">2nd Year</SelectItem>
                   <SelectItem value="3">3rd Year</SelectItem>
@@ -248,9 +254,9 @@ const StudentManagementForm = ({ onStudentAdded }) => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">GPA</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">GPA</Label>
               <Input
                 name="gpa"
                 type="number"
@@ -259,12 +265,13 @@ const StudentManagementForm = ({ onStudentAdded }) => {
                 max="10"
                 value={formData.gpa}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="0.00"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Attendance Rate (%)</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Attendance Rate (%)</Label>
               <Input
                 name="attendance_rate"
                 type="number"
@@ -272,12 +279,13 @@ const StudentManagementForm = ({ onStudentAdded }) => {
                 max="100"
                 value={formData.attendance_rate}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="0 - 100"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Engagement Score</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Engagement Score</Label>
               <Input
                 name="engagement_score"
                 type="number"
@@ -285,41 +293,52 @@ const StudentManagementForm = ({ onStudentAdded }) => {
                 max="100"
                 value={formData.engagement_score}
                 onChange={handleInputChange}
-                className="bg-white/10 border-white/20 text-white"
+                placeholder="0 - 100"
+                className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
               />
             </div>
-            
+
             <div className="space-y-2">
-              <Label className="text-white">Risk Level</Label>
+              <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Risk Level</Label>
               <Select onValueChange={(value) => handleSelectChange('risk_level', value)}>
-                <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                <SelectTrigger className="h-14 bg-muted border-border text-foreground rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4">
                   <SelectValue placeholder="Select risk level" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
+                <SelectContent className="bg-card border-border text-foreground rounded-2xl shadow-2xl">
+                  <SelectItem value="low">Low Risk</SelectItem>
+                  <SelectItem value="medium">Medium Risk</SelectItem>
+                  <SelectItem value="high">High Risk</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {error && (
               <div className="md:col-span-2">
-                <Alert className="bg-red-500/20 border-red-500/50">
-                  <AlertDescription className="text-red-300">
+                <Alert className="bg-destructive/10 border-destructive/20 rounded-2xl">
+                  <AlertDescription className="text-destructive font-bold text-sm">
                     {error}
                   </AlertDescription>
                 </Alert>
               </div>
             )}
 
-            <div className="md:col-span-2">
-              <Button 
-                type="submit" 
-                className="bg-blue-600 hover:bg-blue-700"
+            <div className="md:col-span-2 pt-4">
+              <Button
+                type="submit"
+                className="h-14 px-8 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/10 transition-all active:scale-95"
                 disabled={loading}
               >
-                {loading ? 'Adding Student...' : 'Add Student'}
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Processing...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    <span>Add Student Record</span>
+                  </div>
+                )}
               </Button>
             </div>
           </form>
@@ -327,22 +346,26 @@ const StudentManagementForm = ({ onStudentAdded }) => {
       </Card>
 
       {/* File Upload Section */}
-      <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
+      <Card className="bg-card backdrop-blur-3xl border-border text-foreground shadow-xl overflow-hidden group">
+        <CardHeader className="p-8 border-b border-border bg-muted/30">
+          <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-success/10 text-success">
+              <Upload className="h-5 w-5" />
+            </div>
             Bulk Upload Students
           </CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardDescription className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mt-2">
             Upload CSV/Excel file with student data
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center">
-              <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-blue-400" />
-              <p className="text-gray-300 mb-4">
-                Upload a CSV file with student data
+        <CardContent className="p-8">
+          <div className="space-y-6">
+            <div className="border-2 border-dashed border-border hover:border-primary/40 rounded-3xl p-10 text-center transition-all group/drop">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover/drop:scale-110 transition-transform">
+                <FileSpreadsheet className="h-8 w-8 text-primary" />
+              </div>
+              <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-6">
+                Drop your CSV file here or click to browse
               </p>
               <input
                 type="file"
@@ -354,15 +377,25 @@ const StudentManagementForm = ({ onStudentAdded }) => {
               />
               <label
                 htmlFor="file-upload"
-                className="cursor-pointer inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
+                className="cursor-pointer inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-2xl transition-all font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/10 active:scale-95"
               >
-                {uploadLoading ? 'Uploading...' : 'Choose File'}
+                {uploadLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Processing...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Upload className="w-4 h-4" />
+                    <span>Choose File</span>
+                  </div>
+                )}
               </label>
             </div>
-            
-            <div className="text-sm text-gray-400">
-              <p className="font-medium mb-2">Expected CSV format:</p>
-              <code className="block bg-black/20 p-2 rounded text-xs">
+
+            <div className="p-6 rounded-3xl bg-muted border border-border">
+              <p className="text-[10px] font-black uppercase tracking-widest text-foreground mb-3">Expected CSV Schema</p>
+              <code className="block bg-background p-4 rounded-2xl text-[10px] font-mono text-muted-foreground border border-border leading-relaxed">
                 student_id,name,email,department,year,gpa,attendance_rate,engagement_score,risk_level
               </code>
             </div>

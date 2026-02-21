@@ -91,87 +91,91 @@ const CreateUserForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Button
             onClick={() => navigate('/adminDashboard')}
             variant="outline"
-            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            className="border-border text-foreground hover:bg-muted rounded-2xl font-black uppercase tracking-widest text-[10px] h-11 px-5 transition-all"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
-          <h1 className="text-3xl font-bold text-white">Create New Student</h1>
+          <div className="h-10 w-[1px] bg-border"></div>
+          <h1 className="text-3xl font-black text-foreground tracking-tighter uppercase">Create New Student</h1>
         </div>
 
-        <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UserPlus className="h-5 w-5" />
+        <Card className="bg-card backdrop-blur-3xl border-border text-foreground shadow-xl overflow-hidden">
+          <div className="h-1 w-full bg-gradient-to-r from-primary via-indigo-500 to-accent"></div>
+          <CardHeader className="p-8 border-b border-border bg-muted/30">
+            <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                <UserPlus className="h-5 w-5" />
+              </div>
               Student Information Form
             </CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardDescription className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mt-2">
               Fill in the student details to create a new record
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label className="text-white">Student ID *</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Student ID *</Label>
                 <Input
                   name="student_id"
                   value={formData.student_id}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="Enter student ID"
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Full Name *</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Full Name *</Label>
                 <Input
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="Enter full name"
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Email Address</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</Label>
                 <Input
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="Enter email address"
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Department *</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Department *</Label>
                 <Input
                   name="department"
                   value={formData.department}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="e.g., Computer Science"
                   required
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Academic Year *</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Academic Year *</Label>
                 <Select onValueChange={(value) => handleSelectChange('year', value)} required>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                  <SelectTrigger className="h-14 bg-muted border-border text-foreground rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4">
                     <SelectValue placeholder="Select year" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-card border-border text-foreground rounded-2xl shadow-2xl">
                     <SelectItem value="1">1st Year</SelectItem>
                     <SelectItem value="2">2nd Year</SelectItem>
                     <SelectItem value="3">3rd Year</SelectItem>
@@ -179,9 +183,9 @@ const CreateUserForm = () => {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">GPA</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">GPA</Label>
                 <Input
                   name="gpa"
                   type="number"
@@ -190,13 +194,13 @@ const CreateUserForm = () => {
                   max="10"
                   value={formData.gpa}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="e.g., 3.45"
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Attendance Rate (%)</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Attendance Rate (%)</Label>
                 <Input
                   name="attendance_rate"
                   type="number"
@@ -204,13 +208,13 @@ const CreateUserForm = () => {
                   max="100"
                   value={formData.attendance_rate}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="e.g., 85"
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Engagement Score</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Engagement Score</Label>
                 <Input
                   name="engagement_score"
                   type="number"
@@ -218,18 +222,18 @@ const CreateUserForm = () => {
                   max="100"
                   value={formData.engagement_score}
                   onChange={handleInputChange}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                  className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground/30 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4"
                   placeholder="e.g., 78"
                 />
               </div>
-              
+
               <div className="space-y-2">
-                <Label className="text-white">Risk Level</Label>
+                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Risk Level</Label>
                 <Select onValueChange={(value) => handleSelectChange('risk_level', value)}>
-                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                  <SelectTrigger className="h-14 bg-muted border-border text-foreground rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium px-4">
                     <SelectValue placeholder="Select risk level" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-card border-border text-foreground rounded-2xl shadow-2xl">
                     <SelectItem value="low">Low Risk</SelectItem>
                     <SelectItem value="medium">Medium Risk</SelectItem>
                     <SelectItem value="high">High Risk</SelectItem>
@@ -239,26 +243,26 @@ const CreateUserForm = () => {
 
               {error && (
                 <div className="md:col-span-2">
-                  <Alert className="bg-red-500/20 border-red-500/50">
-                    <AlertDescription className="text-red-300">
+                  <Alert className="bg-destructive/10 border-destructive/20 rounded-2xl">
+                    <AlertDescription className="text-destructive font-bold text-sm">
                       {error}
                     </AlertDescription>
                   </Alert>
                 </div>
               )}
 
-              <div className="md:col-span-2 flex gap-4">
-                <Button 
-                  type="submit" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              <div className="md:col-span-2 flex gap-4 pt-4">
+                <Button
+                  type="submit"
+                  className="h-14 px-8 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-600/90 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/10 transition-all active:scale-95"
                   disabled={loading}
                 >
                   {loading ? 'Creating Student...' : 'Create Student'}
                 </Button>
-                <Button 
+                <Button
                   type="button"
                   variant="outline"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  className="h-14 px-8 border-border text-foreground hover:bg-muted rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all"
                   onClick={() => navigate('/')}
                 >
                   View Public Dashboard
@@ -273,3 +277,4 @@ const CreateUserForm = () => {
 };
 
 export default CreateUserForm;
+

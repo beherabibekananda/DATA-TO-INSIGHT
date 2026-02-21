@@ -267,9 +267,9 @@ const DepartmentAnalytics = () => {
   }));
 
   const riskDistributionData = [
-    { name: 'Low Risk', value: filteredData.reduce((sum, dept) => sum + dept.lowRisk, 0), color: '#10b981' },
-    { name: 'Medium Risk', value: filteredData.reduce((sum, dept) => sum + dept.mediumRisk, 0), color: '#f59e0b' },
-    { name: 'High Risk', value: filteredData.reduce((sum, dept) => sum + dept.highRisk, 0), color: '#ef4444' }
+    { name: 'Low Risk', value: filteredData.reduce((sum, dept) => sum + dept.lowRisk, 0), color: 'hsl(var(--success))' },
+    { name: 'Medium Risk', value: filteredData.reduce((sum, dept) => sum + dept.mediumRisk, 0), color: 'hsl(var(--warning))' },
+    { name: 'High Risk', value: filteredData.reduce((sum, dept) => sum + dept.highRisk, 0), color: 'hsl(var(--destructive))' }
   ];
 
   const totalStudents = filteredData.reduce((sum, dept) => sum + dept.total, 0);
@@ -285,21 +285,21 @@ const DepartmentAnalytics = () => {
             <Target className="w-3.5 h-3.5 text-primary" />
             <span className="text-[10px] font-black uppercase tracking-widest text-primary">Sector Intelligence</span>
           </div>
-          <h2 className="text-4xl font-black text-white tracking-tighter uppercase">Department Analytics</h2>
-          <p className="text-white/20 uppercase tracking-[0.2em] text-[10px] font-black mt-1">Multi-dimensional tracking of academic sectors</p>
+          <h2 className="text-4xl font-black text-foreground tracking-tighter uppercase">Department Analytics</h2>
+          <p className="text-muted-foreground uppercase tracking-[0.2em] text-[10px] font-black mt-1">Multi-dimensional tracking of academic sectors</p>
         </div>
 
-        <div className="flex flex-wrap gap-4 items-center bg-white/[0.02] p-2 rounded-2xl border border-white/5">
+        <div className="flex flex-wrap gap-4 items-center bg-muted/30 p-2 rounded-2xl border border-border">
           <Select value={selectedPeriod} onValueChange={(value) => {
             setSelectedPeriod(value);
             setShowCustomDate(value === 'custom');
           }}>
-            <SelectTrigger className="w-44 bg-white/[0.03] border-white/10 text-white rounded-xl h-11 focus:ring-1 focus:ring-primary/40">
+            <SelectTrigger className="w-44 bg-background border-border text-foreground rounded-xl h-11 focus:ring-1 focus:ring-primary/40">
               <SelectValue placeholder="Period Select" />
             </SelectTrigger>
-            <SelectContent className="bg-[#0c0d12] border-white/10 text-white">
+            <SelectContent className="bg-background border-border text-foreground">
               {timePeriods.map(period => (
-                <SelectItem key={period.value} value={period.value} className="focus:bg-primary/20">
+                <SelectItem key={period.value} value={period.value} className="focus:bg-muted">
                   {period.label}
                 </SelectItem>
               ))}
@@ -313,21 +313,21 @@ const DepartmentAnalytics = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-36 justify-start text-left font-bold bg-white/[0.03] border-white/10 text-white/60 h-11 rounded-xl hover:text-white",
-                      !customDateRange.from && "text-white/20"
+                      "w-36 justify-start text-left font-bold bg-background border-border text-muted-foreground h-11 rounded-xl hover:text-foreground",
+                      !customDateRange.from && "text-muted-foreground/30"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {customDateRange.from ? format(customDateRange.from, "MMM dd") : "From"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 border-white/10" align="start">
+                <PopoverContent className="w-auto p-0 border-border" align="start">
                   <Calendar
                     mode="single"
                     selected={customDateRange.from}
                     onSelect={(date) => setCustomDateRange(prev => ({ ...prev, from: date }))}
                     initialFocus
-                    className="bg-[#0c0d12] text-white rounded-xl"
+                    className="bg-background text-foreground rounded-xl"
                   />
                 </PopoverContent>
               </Popover>
@@ -337,21 +337,21 @@ const DepartmentAnalytics = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-36 justify-start text-left font-bold bg-white/[0.03] border-white/10 text-white/60 h-11 rounded-xl hover:text-white",
-                      !customDateRange.to && "text-white/20"
+                      "w-36 justify-start text-left font-bold bg-background border-border text-muted-foreground h-11 rounded-xl hover:text-foreground",
+                      !customDateRange.to && "text-muted-foreground/30"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {customDateRange.to ? format(customDateRange.to, "MMM dd") : "To"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 border-white/10" align="start">
+                <PopoverContent className="w-auto p-0 border-border" align="start">
                   <Calendar
                     mode="single"
                     selected={customDateRange.to}
                     onSelect={(date) => setCustomDateRange(prev => ({ ...prev, to: date }))}
                     initialFocus
-                    className="bg-[#0c0d12] text-white rounded-xl"
+                    className="bg-background text-foreground rounded-xl"
                   />
                 </PopoverContent>
               </Popover>
@@ -372,22 +372,22 @@ const DepartmentAnalytics = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: 'Active Sectors', value: filteredData.length, icon: Building, color: 'text-primary', glow: 'shadow-primary/10' },
-          { label: 'Total Entities', value: totalStudents.toLocaleString(), icon: Users, color: 'text-secondary', glow: 'shadow-secondary/10' },
+          { label: 'Total Entities', value: totalStudents.toLocaleString(), icon: Users, color: 'text-indigo-500', glow: 'shadow-indigo-500/10' },
           { label: 'Variance Index', value: `${overallRiskPercentage}%`, icon: TrendingUp, color: 'text-destructive', glow: 'shadow-destructive/10' },
           { label: 'Retention Prob.', value: `${Math.round((1 - overallRiskPercentage / 100) * 100)}%`, icon: Globe, color: 'text-success', glow: 'shadow-success/10' },
         ].map((stat, i) => (
-          <Card key={i} className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden group hover:border-primary/20 transition-all">
-            <div className="h-1 w-full bg-white/5 group-hover:bg-primary transition-colors"></div>
+          <Card key={i} className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden group hover:border-primary/20 transition-all shadow-sm">
+            <div className="h-1 w-full bg-border group-hover:bg-primary transition-colors"></div>
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-xl bg-white/[0.03] border border-white/5 ${stat.color} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-xl bg-muted border border-border ${stat.color} group-hover:scale-110 transition-transform shadow-sm`}>
                   <stat.icon className="w-5 h-5" />
                 </div>
-                <ArrowUpRight className="w-4 h-4 text-white/10 group-hover:text-white/30" />
+                <ArrowUpRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-muted-foreground" />
               </div>
               <div className="space-y-1">
                 <p className="text-3xl font-black tracking-tighter">{stat.value}</p>
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/20">{stat.label}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -397,13 +397,13 @@ const DepartmentAnalytics = () => {
       {/* Analytics Visualization Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Performance Composed Chart */}
-        <Card className="lg:col-span-2 bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
-          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+        <Card className="lg:col-span-2 bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-border bg-muted/30">
             <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
               <Zap className="w-5 h-5 text-primary" />
               Comparative Sector Efficiency
             </CardTitle>
-            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Subject volume vs Heuristic risk variance</CardDescription>
+            <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">Subject volume vs Heuristic risk variance</CardDescription>
           </CardHeader>
           <CardContent className="p-8">
             <div className="h-[380px] w-full">
@@ -411,14 +411,14 @@ const DepartmentAnalytics = () => {
                 <ComposedChart data={chartData}>
                   <defs>
                     <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                      <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.2} />
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
                   <XAxis
                     dataKey="department"
-                    stroke="rgba(255,255,255,0.2)"
+                    stroke="rgba(0,0,0,0.3)"
                     fontSize={10}
                     fontWeight="black"
                     tickLine={false}
@@ -426,15 +426,15 @@ const DepartmentAnalytics = () => {
                     dy={10}
                     height={60}
                   />
-                  <YAxis yAxisId="left" stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
-                  <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
+                  <YAxis yAxisId="left" stroke="rgba(0,0,0,0.3)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
+                  <YAxis yAxisId="right" orientation="right" stroke="rgba(0,0,0,0.3)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '12px', fontWeight: 'black' }}
-                    cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                    contentStyle={{ backgroundColor: 'white', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '12px', fontSize: '12px', fontWeight: 'black', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                    cursor={{ fill: 'rgba(0,0,0,0.03)' }}
                   />
                   <Bar yAxisId="left" dataKey="students" fill="url(#barGradient)" radius={[6, 6, 0, 0]} name="Volume" barSize={32} />
-                  <Bar yAxisId="left" dataKey="atRisk" fill="#ef4444" radius={[6, 6, 0, 0]} name="Critical" barSize={24} opacity={0.6} />
-                  <Line yAxisId="right" type="monotone" dataKey="riskPercentage" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }} name="Risk Velocity" />
+                  <Bar yAxisId="left" dataKey="atRisk" fill="hsl(var(--destructive))" radius={[6, 6, 0, 0]} name="Critical" barSize={24} opacity={0.6} />
+                  <Line yAxisId="right" type="monotone" dataKey="riskPercentage" stroke="hsl(var(--warning))" strokeWidth={3} dot={{ r: 4, fill: 'hsl(var(--warning))', strokeWidth: 0 }} name="Risk Velocity" />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
@@ -442,13 +442,13 @@ const DepartmentAnalytics = () => {
         </Card>
 
         {/* Global Distribution Pie Chart */}
-        <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
-          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+        <Card className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-border bg-muted/30">
             <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
               <Globe className="w-5 h-5 text-secondary" />
               Global Risk Allocation
             </CardTitle>
-            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Aggregate subject security breakdown</CardDescription>
+            <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">Aggregate subject security breakdown</CardDescription>
           </CardHeader>
           <CardContent className="p-8 flex flex-col justify-between h-[calc(100%-110px)]">
             <div className="h-[280px]">
@@ -469,7 +469,7 @@ const DepartmentAnalytics = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                    contentStyle={{ backgroundColor: 'white', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -477,10 +477,10 @@ const DepartmentAnalytics = () => {
 
             <div className="space-y-4">
               {riskDistributionData.map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-muted border border-border">
                   <div className="flex items-center gap-3">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{item.name}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.name}</span>
                   </div>
                   <span className="text-sm font-black tracking-tight">{item.value} Subjects</span>
                 </div>
@@ -493,20 +493,20 @@ const DepartmentAnalytics = () => {
       {/* Sector Intelligence Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
         {filteredData.map((dept, index) => (
-          <Card key={dept.name} className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden hover:border-primary/40 transition-all duration-500 group">
+          <Card key={dept.name} className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden hover:border-primary/40 transition-all duration-500 group">
             <div className={`h-1.5 w-full ${dept.percentage > 25 ? 'bg-destructive' :
-                dept.percentage > 10 ? 'bg-warning' :
-                  'bg-success'
+              dept.percentage > 10 ? 'bg-warning' :
+                'bg-success'
               } opacity-40 group-hover:opacity-100 transition-opacity`}></div>
             <CardHeader className="p-6">
               <div className="flex justify-between items-start">
                 <div>
                   <CardTitle className="text-lg font-black uppercase tracking-tight group-hover:text-primary transition-colors">{dept.name}</CardTitle>
-                  <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mt-1">Sector Node Alpha-{index}</p>
+                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">Sector Node Alpha-{index}</p>
                 </div>
                 <Badge className={`rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest border ${dept.percentage > 25 ? 'bg-destructive/10 text-destructive border-destructive/20' :
-                    dept.percentage > 10 ? 'bg-warning/10 text-warning border-warning/20' :
-                      'bg-success/10 text-success border-success/20'
+                  dept.percentage > 10 ? 'bg-warning/10 text-warning border-warning/20' :
+                    'bg-success/10 text-success border-success/20'
                   }`}>
                   {dept.percentage}% Variance
                 </Badge>
@@ -515,42 +515,42 @@ const DepartmentAnalytics = () => {
             <CardContent className="p-6 pt-0">
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5">
-                    <div className="text-2xl font-black tracking-tighter text-white">{dept.total}</div>
-                    <div className="text-[9px] text-white/20 font-black uppercase tracking-widest">Active Units</div>
+                  <div className="p-3 rounded-2xl bg-muted border border-border">
+                    <div className="text-2xl font-black tracking-tighter text-foreground">{dept.total}</div>
+                    <div className="text-[9px] text-muted-foreground font-black uppercase tracking-widest">Active Units</div>
                   </div>
-                  <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                  <div className="p-3 rounded-2xl bg-muted border border-border">
                     <div className="text-2xl font-black tracking-tighter text-destructive">{dept.atRisk}</div>
-                    <div className="text-[9px] text-white/20 font-black uppercase tracking-widest">Critical Alert</div>
+                    <div className="text-[9px] text-muted-foreground font-black uppercase tracking-widest">Critical Alert</div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   {[
                     { label: 'GPA Index', val: dept.avgGpa, max: 10, color: 'bg-primary' },
-                    { label: 'Presence', val: dept.avgAttendance, max: 100, color: 'bg-secondary' },
+                    { label: 'Presence', val: dept.avgAttendance, max: 100, color: 'bg-indigo-500' },
                     { label: 'Synergy', val: dept.avgEngagement, max: 100, color: 'bg-accent' },
                   ].map((metric, i) => (
                     <div key={i} className="space-y-1.5">
                       <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-white/40">{metric.label}</span>
-                        <span className="text-white">{metric.val}{metric.max === 100 ? '%' : ''}</span>
+                        <span className="text-muted-foreground">{metric.label}</span>
+                        <span className="text-foreground">{metric.val}{metric.max === 100 ? '%' : ''}</span>
                       </div>
-                      <div className="h-1 w-full bg-white/[0.03] rounded-full overflow-hidden">
+                      <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
                         <div className={`h-full rounded-full ${metric.color}`} style={{ width: `${(metric.val / metric.max) * 100}%` }}></div>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                <div className="pt-4 border-t border-border flex items-center justify-between">
                   <div>
                     <div className="text-xl font-black text-success tracking-tighter">
                       {Math.round((1 - dept.percentage / 100) * 100)}%
                     </div>
-                    <div className="text-[9px] text-white/20 font-black uppercase tracking-widest">Success Probability</div>
+                    <div className="text-[9px] text-muted-foreground font-black uppercase tracking-widest">Success Probability</div>
                   </div>
-                  <Brain className="w-8 h-8 text-white/[0.02] group-hover:text-primary/10 transition-colors" />
+                  <Brain className="w-8 h-8 text-muted-foreground/10 group-hover:text-primary/20 transition-colors" />
                 </div>
               </div>
             </CardContent>

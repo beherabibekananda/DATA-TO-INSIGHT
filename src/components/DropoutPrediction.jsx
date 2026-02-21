@@ -83,22 +83,22 @@ const DropoutPrediction = () => {
         const riskLevel = overallScore > 0.6 ? 'high' : overallScore > 0.35 ? 'medium' : 'low';
 
         const factors = [
-            { name: 'Operational GPA', weight: 0.4, score: gpaScore, impact: gpaScore >= 0.7 ? 'positive' : 'negative', actual: gpa.toFixed(2) },
-            { name: 'Attendance Density', weight: 0.3, score: attendanceScore, impact: attendanceScore >= 0.75 ? 'positive' : 'negative', actual: `${attendance}%` },
-            { name: 'Synergy Coeff', weight: 0.2, score: engagementScore, impact: engagementScore >= 0.6 ? 'positive' : 'negative', actual: `${engagement}/100` },
-            { name: 'Academic Cycle', weight: 0.1, score: yearScore, impact: year <= 2 ? 'positive' : 'neutral', actual: `Cycle ${year}` }
+            { name: 'GPA Index', weight: 0.4, score: gpaScore, impact: gpaScore >= 0.7 ? 'positive' : 'negative', actual: gpa.toFixed(2) },
+            { name: 'Attendance', weight: 0.3, score: attendanceScore, impact: attendanceScore >= 0.75 ? 'positive' : 'negative', actual: `${attendance}%` },
+            { name: 'Engagement', weight: 0.2, score: engagementScore, impact: engagementScore >= 0.6 ? 'positive' : 'negative', actual: `${engagement}/100` },
+            { name: 'Academic Year', weight: 0.1, score: yearScore, impact: year <= 2 ? 'positive' : 'neutral', actual: `Year ${year}` }
         ];
 
         const recommendations = [];
-        if (attendanceScore < 0.75) recommendations.push({ priority: 'high', action: 'Attendance Sync', description: `Presence density is critical. Initiate mandatory session tracking protocols.`, expectedImpact: 0.25 });
-        if (gpaScore < 0.6) recommendations.push({ priority: 'high', action: 'Heuristic Support', description: `Node GPA deviation detected. Assign academic remediation and tutoring.`, expectedImpact: 0.35 });
+        if (attendanceScore < 0.75) recommendations.push({ priority: 'high', action: 'Improve Attendance', description: `Student attendance is low. Monitor attendance records more closely and schedule a meeting with the student.`, expectedImpact: 0.25 });
+        if (gpaScore < 0.6) recommendations.push({ priority: 'high', action: 'Academic Support', description: `Student grades are below average. Suggest additional tutoring and academic resources.`, expectedImpact: 0.35 });
 
         if (recommendations.length === 0) {
-            recommendations.push({ priority: 'low', action: 'Nominal Maintenance', description: 'Subject performance is within stable parameters. Continue current observation.', expectedImpact: 0 });
+            recommendations.push({ priority: 'low', action: 'Regular Monitoring', description: 'Student performance is stable. Continue regular academic monitoring.', expectedImpact: 0 });
         }
 
         return {
-            studentName: studentData.name || 'Manual Probe',
+            studentName: studentData.name || 'Manual Analysis',
             department: studentData.department,
             year: year,
             overallRisk: {
@@ -158,7 +158,7 @@ const DropoutPrediction = () => {
             case 'high': return 'text-destructive border-destructive/20 bg-destructive/5';
             case 'medium': return 'text-warning border-warning/20 bg-warning/5';
             case 'low': return 'text-success border-success/20 bg-success/5';
-            default: return 'text-white/40 border-white/5 bg-white/5';
+            default: return 'text-muted-foreground border-border bg-muted/50';
         }
     };
 
@@ -173,82 +173,82 @@ const DropoutPrediction = () => {
             <div className="text-center">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
                     <Target className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">Precision Diagnostics</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">Dropout Prediction</span>
                 </div>
-                <h1 className="text-5xl font-black text-white tracking-tighter uppercase mb-4">Dropout Prediction Terminal</h1>
-                <p className="text-white/20 uppercase tracking-[0.2em] text-[10px] font-black mt-1">High-fidelity heuristic analysis of academic persistence markers</p>
+                <h1 className="text-5xl font-black text-foreground tracking-tighter uppercase mb-4">Predict Student Dropout</h1>
+                <p className="text-muted-foreground uppercase tracking-[0.2em] text-[10px] font-black mt-1">Advanced AI analysis of factors impacting student academic success</p>
             </div>
 
             {/* Mode Controls */}
             <div className="flex justify-center">
-                <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-1 flex gap-2">
+                <div className="bg-muted border border-border rounded-3xl p-1 flex gap-2">
                     <button
                         onClick={() => { setMode('manual'); resetAll(); }}
-                        className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === 'manual' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                        className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === 'manual' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
                     >
-                        Manual Probe
+                        Manual Entry
                     </button>
                     <button
                         onClick={() => { setMode('search'); resetAll(); }}
-                        className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === 'search' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                        className={`px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === 'search' ? 'bg-primary text-white shadow-xl shadow-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
                     >
-                        Network Scan
+                        Search Students
                     </button>
                 </div>
             </div>
 
             {/* Manual Entry */}
             {mode === 'manual' && !showResults && !predicting && (
-                <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl max-w-4xl mx-auto">
-                    <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+                <Card className="bg-card backdrop-blur-3xl border-border text-foreground overflow-hidden shadow-2xl max-w-4xl mx-auto">
+                    <CardHeader className="p-8 border-b border-border bg-muted/30">
                         <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
                             <PenLine className="w-6 h-6 text-primary" />
-                            Diagnostic Input
+                            Enter Student Details
                         </CardTitle>
-                        <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Define operational parameters for neural synthesis</CardDescription>
+                        <CardDescription className="text-muted-foreground uppercase tracking-widest text-[9px] font-black">Fill in the fields below to analyze dropout probability</CardDescription>
                     </CardHeader>
                     <CardContent className="p-10 space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Subject Designation</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Student Name</Label>
                                 <Input
-                                    placeholder="Enter full identity string"
+                                    placeholder="Enter full name"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="bg-white/[0.03] border-white/10 h-14 rounded-2xl focus:ring-1 focus:ring-primary/40 placeholder:text-white/10"
+                                    className="bg-muted/50 border-border h-14 rounded-2xl focus:ring-1 focus:ring-primary/40 placeholder:text-muted-foreground/30"
                                 />
                             </div>
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Sector Assignment</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Department</Label>
                                 <select
                                     value={formData.department}
                                     onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl h-14 px-4 text-xs text-white uppercase font-black outline-none focus:ring-1 focus:ring-primary/40 appearance-none"
+                                    className="w-full bg-muted/50 border border-border rounded-2xl h-14 px-4 text-xs text-foreground uppercase font-black outline-none focus:ring-1 focus:ring-primary/40 appearance-none"
                                 >
                                     {DEPARTMENTS.map(dept => (
-                                        <option key={dept} value={dept} className="bg-[#0c0d12]">{dept}</option>
+                                        <option key={dept} value={dept} className="bg-background">{dept}</option>
                                     ))}
                                 </select>
                             </div>
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Merit Index (0.0 - 4.0)</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">GPA Score (0.0 - 4.0)</Label>
                                 <Input
                                     type="number"
                                     step="0.01"
                                     placeholder="GPA"
                                     value={formData.gpa}
                                     onChange={(e) => setFormData({ ...formData, gpa: e.target.value })}
-                                    className="bg-white/[0.03] border-white/10 h-14 rounded-2xl focus:ring-1 focus:ring-primary/40 text-lg font-mono"
+                                    className="bg-muted/50 border-border h-14 rounded-2xl focus:ring-1 focus:ring-primary/40 text-lg font-mono placeholder:text-muted-foreground/30"
                                 />
                             </div>
                             <div className="space-y-3">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Presence Density (%)</Label>
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Attendance Rate (%)</Label>
                                 <Input
                                     type="number"
                                     placeholder="Attendance Rate"
                                     value={formData.attendance}
                                     onChange={(e) => setFormData({ ...formData, attendance: e.target.value })}
-                                    className="bg-white/[0.03] border-white/10 h-14 rounded-2xl focus:ring-1 focus:ring-primary/40 text-lg font-mono"
+                                    className="bg-muted/50 border-border h-14 rounded-2xl focus:ring-1 focus:ring-primary/40 text-lg font-mono placeholder:text-muted-foreground/30"
                                 />
                             </div>
                         </div>
@@ -259,7 +259,7 @@ const DropoutPrediction = () => {
                             className="w-full h-16 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-primary/20 transition-all hover:scale-[1.01] active:scale-98"
                         >
                             <Brain className="w-5 h-5 mr-3" />
-                            Initiate Heuristic Probe
+                            Generate Prediction
                         </Button>
                     </CardContent>
                 </Card>
@@ -269,12 +269,12 @@ const DropoutPrediction = () => {
             {mode === 'search' && !showResults && !predicting && (
                 <div className="max-w-2xl mx-auto space-y-6">
                     <div className="relative group">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-white/10 group-hover:text-primary transition-colors" />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground/30 group-hover:text-primary transition-colors" />
                         <Input
-                            placeholder="Search network nodes..."
+                            placeholder="Search student records..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white/[0.03] border-white/10 h-20 rounded-3xl pl-16 text-xl placeholder:text-white/5 focus:ring-1 focus:ring-primary/40"
+                            className="bg-muted border-border h-20 rounded-3xl pl-16 text-xl placeholder:text-muted-foreground/30 focus:ring-1 focus:ring-primary/40"
                         />
                     </div>
 
@@ -283,18 +283,18 @@ const DropoutPrediction = () => {
                             <button
                                 key={student.id}
                                 onClick={() => handleSelectStudent(student)}
-                                className="w-full p-6 rounded-3xl bg-white/[0.01] border border-white/5 hover:border-primary/40 hover:bg-white/[0.04] transition-all flex items-center justify-between group"
+                                className="w-full p-6 rounded-3xl bg-card border border-border hover:border-primary/40 hover:bg-muted/50 transition-all flex items-center justify-between group shadow-sm"
                             >
                                 <div className="flex items-center gap-4 text-left">
-                                    <div className="w-12 h-12 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-center text-primary font-black">
+                                    <div className="w-12 h-12 bg-muted border border-border rounded-2xl flex items-center justify-center text-primary font-black">
                                         {student.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <p className="text-lg font-black text-white/80 group-hover:text-white transition-colors uppercase tracking-tight">{student.name}</p>
-                                        <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">{student.student_id} • {student.department}</p>
+                                        <p className="text-lg font-black text-foreground/80 group-hover:text-foreground transition-colors uppercase tracking-tight">{student.name}</p>
+                                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{student.student_id} • {student.department}</p>
                                     </div>
                                 </div>
-                                <ChevronRight className="w-5 h-5 text-white/10 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                             </button>
                         ))}
                     </div>
@@ -304,33 +304,33 @@ const DropoutPrediction = () => {
             {/* Results */}
             {showResults && prediction && (
                 <div className="space-y-10 animate-in slide-in-from-bottom-10 duration-700 max-w-6xl mx-auto">
-                    <Card className={`bg-card/40 backdrop-blur-3xl border-2 ${getRiskColors(prediction.overallRisk.level).split(' ')[1]} overflow-hidden shadow-2xl relative`}>
+                    <Card className={`bg-card backdrop-blur-3xl border-2 ${getRiskColors(prediction.overallRisk.level).replace('bg-', 'border-').split(' ')[1]} overflow-hidden shadow-2xl relative`}>
                         <div className="absolute top-0 right-0 p-10 opacity-5">
-                            <Shield className="w-64 h-64 text-white" />
+                            <Shield className="w-64 h-64 text-foreground" />
                         </div>
                         <CardContent className="p-12 relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <div className="space-y-8">
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-3">
-                                        <h2 className="text-5xl font-black text-white tracking-tighter uppercase">{prediction.studentName}</h2>
+                                        <h2 className="text-5xl font-black text-foreground tracking-tighter uppercase">{prediction.studentName}</h2>
                                         <Sparkles className="w-6 h-6 text-primary animate-pulse" />
                                     </div>
-                                    <p className="text-white/20 uppercase tracking-[0.2em] text-xs font-black">{prediction.department} • CYCLE {prediction.year}</p>
+                                    <p className="text-muted-foreground uppercase tracking-[0.2em] text-xs font-black">{prediction.department} • YEAR {prediction.year}</p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-6">
-                                    <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
-                                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Risk Index</span>
+                                    <div className="p-6 rounded-3xl bg-muted/50 border border-border flex flex-col gap-1">
+                                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Risk Percentage</span>
                                         <span className={`text-4xl font-black ${getRiskColors(prediction.overallRisk.level).split(' ')[0]}`}>{Math.round(prediction.overallRisk.score * 100)}%</span>
                                     </div>
-                                    <div className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 flex flex-col gap-1">
-                                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Inference State</span>
+                                    <div className="p-6 rounded-3xl bg-muted/50 border border-border flex flex-col gap-1">
+                                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Risk Level</span>
                                         <span className={`text-4xl font-black uppercase tracking-tighter ${getRiskColors(prediction.overallRisk.level).split(' ')[0]}`}>{prediction.overallRisk.level}</span>
                                     </div>
                                 </div>
 
-                                <Button onClick={resetAll} variant="outline" className="bg-white/[0.02] border-white/5 text-white/40 hover:text-white rounded-xl h-12 px-8 text-[10px] font-black uppercase tracking-widest transition-all">
-                                    Reset Diagnostic Terminal
+                                <Button onClick={resetAll} variant="outline" className="bg-muted border-border text-muted-foreground hover:text-foreground rounded-xl h-12 px-8 text-[10px] font-black uppercase tracking-widest transition-all">
+                                    New Prediction
                                 </Button>
                             </div>
 
@@ -338,16 +338,16 @@ const DropoutPrediction = () => {
                                 <div className="h-[320px] w-full max-w-[400px]">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <RadarChart data={radarData}>
-                                            <PolarGrid stroke="rgba(255,255,255,0.05)" />
+                                            <PolarGrid stroke="rgba(0,0,0,0.05)" />
                                             <PolarAngleAxis
                                                 dataKey="factor"
-                                                tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.4)', fontWeight: 'black', letterSpacing: '0.1em' }}
+                                                tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.4)', fontWeight: 'black', letterSpacing: '0.1em' }}
                                             />
                                             <Radar
                                                 name="Impact"
                                                 dataKey="score"
-                                                stroke="#8b5cf6"
-                                                fill="#8b5cf6"
+                                                stroke="hsl(var(--primary))"
+                                                fill="hsl(var(--primary))"
                                                 fillOpacity={0.1}
                                                 strokeWidth={3}
                                             />
@@ -360,21 +360,21 @@ const DropoutPrediction = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {prediction.recommendations.map((rec, i) => (
-                            <Card key={i} className="bg-card/40 backdrop-blur-3xl border-white/5 overflow-hidden group hover:border-primary/40 transition-all">
+                            <Card key={i} className="bg-card backdrop-blur-3xl border-border overflow-hidden group hover:border-primary/40 transition-all shadow-lg">
                                 <CardContent className="p-8 flex gap-6">
-                                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 border transition-all group-hover:scale-110 ${rec.priority === 'high' ? 'bg-destructive/10 text-destructive border-destructive/20' : 'bg-primary/10 text-primary border-primary/20'}`}>
+                                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 border transition-all group-hover:scale-110 shadow-sm ${rec.priority === 'high' ? 'bg-destructive/10 text-destructive border-destructive/20' : 'bg-primary/10 text-primary border-primary/20'}`}>
                                         {rec.priority === 'high' ? <AlertTriangle className="w-8 h-8" /> : <Shield className="w-8 h-8" />}
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex items-center gap-3">
-                                            <h4 className="text-xl font-black text-white tracking-tighter uppercase">{rec.action}</h4>
-                                            <Badge className="bg-white/5 text-white/40 border-white/10 text-[8px] font-black uppercase tracking-widest">{rec.priority} Priority</Badge>
+                                            <h4 className="text-xl font-black text-foreground tracking-tighter uppercase">{rec.action}</h4>
+                                            <Badge className="bg-muted text-muted-foreground border-border text-[8px] font-black uppercase tracking-widest">{rec.priority} Priority</Badge>
                                         </div>
-                                        <p className="text-white/40 text-xs font-bold leading-relaxed tracking-tight uppercase">{rec.description}</p>
+                                        <p className="text-muted-foreground text-xs font-bold leading-relaxed tracking-tight uppercase">{rec.description}</p>
                                         {rec.expectedImpact > 0 && (
                                             <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-[9px] font-black text-primary uppercase tracking-widest">
                                                 <Zap className="w-3 h-3" />
-                                                Efficiency Delta: +{Math.round(rec.expectedImpact * 100)}%
+                                                Expected Improvement: +{Math.round(rec.expectedImpact * 100)}%
                                             </div>
                                         )}
                                     </div>
@@ -387,14 +387,14 @@ const DropoutPrediction = () => {
 
             {/* Animation */}
             {predicting && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#02040a]/90 backdrop-blur-xl transition-all duration-700">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-xl transition-all duration-700">
                     <div className="text-center space-y-8">
                         <div className="w-24 h-24 border-2 border-primary/10 border-t-primary rounded-full animate-spin mx-auto flex items-center justify-center">
                             <Brain className="w-12 h-12 text-primary animate-pulse" />
                         </div>
                         <div className="space-y-2">
-                            <h3 className="text-2xl font-black text-white tracking-widest uppercase">Initializing Neural Synthesis</h3>
-                            <p className="text-white/20 text-[10px] font-black tracking-[0.4em] uppercase">Analyzing primary risk vectors</p>
+                            <h3 className="text-2xl font-black text-foreground tracking-widest uppercase">Analyzing Student Data</h3>
+                            <p className="text-muted-foreground text-[10px] font-black tracking-[0.4em] uppercase">Calculating risk factors...</p>
                         </div>
                     </div>
                 </div>
