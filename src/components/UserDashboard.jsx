@@ -12,9 +12,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { Users, AlertTriangle, TrendingUp, GraduationCap, Search, BookOpen, Activity } from 'lucide-react';
+import { Users, AlertTriangle, TrendingUp, GraduationCap, Search, BookOpen, Activity, LayoutDashboard, LogOut, ChevronRight, Brain } from 'lucide-react';
 
-const COLORS = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#14b8a6'];
+const COLORS = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#7c3aed', '#6d28d9', '#5b21b6', '#4c1d95'];
 
 const UserDashboard = () => {
   const { user, profile, signOut } = useAuth();
@@ -98,281 +98,298 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading Dashboard...</div>
+      <div className="min-h-screen bg-[#02040a] flex items-center justify-center">
+        <div className="relative w-24 h-24">
+          <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
+          <Brain className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-[#02040a] text-white p-6 relative overflow-hidden">
+      {/* Dynamic Background Effects */}
+      <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-secondary/10 blur-[150px] rounded-full"></div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              <GraduationCap className="w-8 h-8 text-blue-400" />
-              EduAnalytics Dashboard
-            </h1>
-            <p className="text-gray-400 mt-1">Welcome back, <span className="text-blue-300 font-medium">{profile?.full_name || user?.email || 'User'}</span></p>
+        <div className="flex justify-between items-center mb-12">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center group hover:bg-white/[0.05] transition-all">
+              <LayoutDashboard className="w-8 h-8 text-primary" />
+            </div>
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-4xl font-black tracking-tighter uppercase whitespace-nowrap">EduIntelligence</h1>
+                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] font-black uppercase tracking-widest px-3">Subject Mode</Badge>
+              </div>
+              <p className="text-white/20 uppercase tracking-[0.2em] text-[10px] font-black mt-1">
+                Authorized Node: {profile?.full_name || user?.email || 'Guest Subject'}
+              </p>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-500/30 px-3 py-1">
-              {profile?.role || 'user'}
-            </Badge>
+          <div className="flex items-center gap-4">
+            <div className="px-4 py-2 rounded-xl bg-white/[0.03] border border-white/5 hidden sm:flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Secure Connection</span>
+            </div>
             <Button
               onClick={handleSignOut}
-              variant="outline"
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              className="bg-destructive/10 border border-destructive/20 text-destructive hover:bg-destructive/20 rounded-xl px-6 h-12 transition-all font-bold uppercase tracking-widest text-xs"
             >
-              Sign Out
+              <LogOut className="w-4 h-4 mr-2" />
+              Sever Connection
             </Button>
           </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-blue-500/20">
-                <Users className="w-6 h-6 text-blue-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{totalStudents}</p>
-                <p className="text-xs text-gray-400">Total Students</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-red-500/20">
-                <AlertTriangle className="w-6 h-6 text-red-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{highRiskCount}</p>
-                <p className="text-xs text-gray-400">High Risk</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-green-500/20">
-                <TrendingUp className="w-6 h-6 text-green-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{avgGpa}</p>
-                <p className="text-xs text-gray-400">Avg GPA</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="p-3 rounded-lg bg-purple-500/20">
-                <Activity className="w-6 h-6 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{avgAttendance}%</p>
-                <p className="text-xs text-gray-400">Avg Attendance</p>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          {[
+            { label: 'Total Subjects', value: totalStudents, icon: Users, color: 'primary', bg: 'bg-primary/10', text: 'text-primary' },
+            { label: 'Critical Alert', value: highRiskCount, icon: AlertTriangle, color: 'destructive', bg: 'bg-destructive/10', text: 'text-destructive' },
+            { label: 'Aggregate GPA', value: avgGpa, icon: TrendingUp, color: 'success', bg: 'bg-success/10', text: 'text-success' },
+            { label: 'Network Presence', value: `${avgAttendance}%`, icon: Activity, color: 'secondary', bg: 'bg-secondary/10', text: 'text-secondary' },
+          ].map((stat, i) => (
+            <Card key={i} className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden group hover:border-primary/20 transition-all">
+              <div className={`h-1 w-full opacity-20 bg-current ${stat.text}`}></div>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-3 rounded-xl ${stat.bg} ${stat.text} group-hover:scale-110 transition-transform`}>
+                    <stat.icon className="w-6 h-6" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-white/30" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-3xl font-black tracking-tighter">{stat.value}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/20">{stat.label}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
           {/* Department Distribution */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <BookOpen className="w-5 h-5 text-blue-400" />
-                Department Distribution
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden shadow-2xl">
+            <CardHeader className="p-8 border-b border-white/5">
+              <CardTitle className="flex items-center gap-3 text-xl font-black uppercase tracking-tighter">
+                <BookOpen className="w-6 h-6 text-primary" />
+                Sector Distribution
               </CardTitle>
-              <CardDescription className="text-gray-400">Students across departments</CardDescription>
+              <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Multi-sector subject allocation</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie data={deptData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name, value }) => `${name.substring(0, 8)}: ${value}`}>
-                    {deptData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white' }} />
-                </PieChart>
-              </ResponsiveContainer>
+            <CardContent className="p-8">
+              <div className="h-[280px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={deptData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={100}
+                      innerRadius={60}
+                      stroke="none"
+                      paddingAngle={5}
+                    >
+                      {deptData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', color: 'white', fontSize: '12px', fontWeight: 'bold' }}
+                      itemStyle={{ color: '#8b5cf6' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap justify-center gap-4 mt-6">
+                {deptData.slice(0, 4).map((dept, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: dept.color }}></div>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">{dept.name}</span>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
           {/* Risk by Department */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <AlertTriangle className="w-5 h-5 text-yellow-400" />
-                Risk Levels by Department
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden shadow-2xl">
+            <CardHeader className="p-8 border-b border-white/5">
+              <CardTitle className="flex items-center gap-3 text-xl font-black uppercase tracking-tighter">
+                <AlertTriangle className="w-6 h-6 text-warning" />
+                Threat Matrix
               </CardTitle>
-              <CardDescription className="text-gray-400">Student risk distribution per department</CardDescription>
+              <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Heuristic risk distribution per sector</CardDescription>
             </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={riskByDept}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} />
-                  <YAxis stroke="#94a3b8" />
-                  <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white' }} />
-                  <Bar dataKey="low" stackId="risk" fill="#10b981" name="Low Risk" />
-                  <Bar dataKey="medium" stackId="risk" fill="#f59e0b" name="Medium Risk" />
-                  <Bar dataKey="high" stackId="risk" fill="#ef4444" name="High Risk" />
-                </BarChart>
-              </ResponsiveContainer>
+            <CardContent className="p-8">
+              <div className="h-[320px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={riskByDept}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                    <XAxis dataKey="name" stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="bold" axisLine={false} tickLine={false} />
+                    <YAxis stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="bold" axisLine={false} tickLine={false} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }}
+                      cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                    />
+                    <Bar dataKey="low" stackId="risk" fill="#10b981" radius={[0, 0, 0, 0]} opacity={0.6} />
+                    <Bar dataKey="medium" stackId="risk" fill="#f59e0b" radius={[0, 0, 0, 0]} opacity={0.6} />
+                    <Bar dataKey="high" stackId="risk" fill="#ef4444" radius={[4, 4, 0, 0]} opacity={0.8} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Risk Summary + Profile Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Risk Summary */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader>
-              <CardTitle className="text-lg">Risk Summary</CardTitle>
+        {/* Secondary Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+          {/* Risk Summary Progress */}
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden h-fit">
+            <CardHeader className="p-8">
+              <CardTitle className="text-xl font-black uppercase tracking-tighter">Risk Aggregate</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-green-500"></span>
-                  Low Risk
-                </span>
-                <span className="font-bold text-green-400">{lowRiskCount} ({totalStudents > 0 ? ((lowRiskCount / totalStudents) * 100).toFixed(0) : 0}%)</span>
-              </div>
-              <div className="w-full bg-white/10 rounded-full h-2"><div className="bg-green-500 h-2 rounded-full" style={{ width: `${totalStudents > 0 ? (lowRiskCount / totalStudents) * 100 : 0}%` }}></div></div>
-
-              <div className="flex justify-between items-center">
-                <span className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-                  Medium Risk
-                </span>
-                <span className="font-bold text-yellow-400">{medRiskCount} ({totalStudents > 0 ? ((medRiskCount / totalStudents) * 100).toFixed(0) : 0}%)</span>
-              </div>
-              <div className="w-full bg-white/10 rounded-full h-2"><div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${totalStudents > 0 ? (medRiskCount / totalStudents) * 100 : 0}%` }}></div></div>
-
-              <div className="flex justify-between items-center">
-                <span className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-red-500"></span>
-                  High Risk
-                </span>
-                <span className="font-bold text-red-400">{highRiskCount} ({totalStudents > 0 ? ((highRiskCount / totalStudents) * 100).toFixed(0) : 0}%)</span>
-              </div>
-              <div className="w-full bg-white/10 rounded-full h-2"><div className="bg-red-500 h-2 rounded-full" style={{ width: `${totalStudents > 0 ? (highRiskCount / totalStudents) * 100 : 0}%` }}></div></div>
+            <CardContent className="px-8 pb-10 space-y-8">
+              {[
+                { label: 'Low Risk Profile', count: lowRiskCount, color: 'bg-success', text: 'text-success', total: totalStudents },
+                { label: 'Moderate Divergence', count: medRiskCount, color: 'bg-warning', text: 'text-warning', total: totalStudents },
+                { label: 'Critical Variance', count: highRiskCount, color: 'bg-destructive', text: 'text-destructive', total: totalStudents },
+              ].map((risk, i) => (
+                <div key={i} className="space-y-3">
+                  <div className="flex justify-between items-end">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{risk.label}</span>
+                    <span className={`text-sm font-black tracking-tight ${risk.text}`}>
+                      {risk.count} ({risk.total > 0 ? ((risk.count / risk.total) * 100).toFixed(0) : 0}%)
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/[0.03] rounded-full overflow-hidden border border-white/5">
+                    <div className={`h-full rounded-full ${risk.color}`} style={{ width: `${risk.total > 0 ? (risk.count / risk.total) * 100 : 0}%` }}></div>
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
 
-          {/* At-Risk Students */}
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-red-400" />
-                Top At-Risk Students
-              </CardTitle>
-              <CardDescription className="text-gray-400">Students requiring immediate attention</CardDescription>
+          {/* Top At-Risk Students */}
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white lg:col-span-2 overflow-hidden">
+            <CardHeader className="p-8 border-b border-white/5 relative bg-white/[0.01]">
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+                    <AlertTriangle className="w-5 h-5 text-destructive" />
+                    Priority Interventions
+                  </CardTitle>
+                  <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black mt-1">Subjects requiring immediate heuristic correction</CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               {atRiskStudents.length > 0 ? (
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {atRiskStudents.map((student, index) => (
-                    <div key={student.id || index} className="flex items-center justify-between p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10">
-                          <AvatarFallback className="bg-red-600/30 text-red-300 text-sm font-bold">
-                            {(student.name || 'S').charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
+                    <div key={student.id || index} className="group flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-destructive/10 rounded-xl flex items-center justify-center text-destructive font-black group-hover:scale-110 transition-transform">
+                          {(student.name || 'S').charAt(0)}
+                        </div>
                         <div>
-                          <p className="font-medium text-white">{student.name}</p>
-                          <p className="text-xs text-gray-400">{student.department} • Year {student.year}</p>
+                          <p className="font-bold text-sm tracking-tight">{student.name}</p>
+                          <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{student.department}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-red-300 font-semibold">GPA: {student.gpa}</p>
-                        <p className="text-xs text-gray-400">Attendance: {student.attendance_rate}%</p>
+                        <div className="px-2 py-0.5 rounded-lg bg-destructive/10 text-destructive text-[9px] font-black uppercase tracking-widest mb-1">Critical</div>
+                        <p className="font-mono text-[10px] text-white/60 font-bold">GPA: {student.gpa}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-400 text-center py-4">No high-risk students found</p>
+                <div className="py-20 text-center flex flex-col items-center">
+                  <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mb-4">
+                    <Activity className="w-8 h-8 text-success" />
+                  </div>
+                  <p className="text-white/20 font-black uppercase tracking-widest text-xs">Zero Critical Deviations Detected</p>
+                </div>
               )}
             </CardContent>
           </Card>
         </div>
 
-        {/* Student Search & Table */}
-        <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Search className="w-5 h-5 text-blue-400" />
-              Student Directory
-            </CardTitle>
-            <div className="flex flex-col md:flex-row gap-3 mt-3">
-              <Input
-                placeholder="Search by name, ID, or department..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 flex-1"
-              />
-              <select
-                value={selectedDept}
-                onChange={(e) => setSelectedDept(e.target.value)}
-                className="bg-white/10 border border-white/20 text-white rounded-md px-3 py-2 text-sm"
-              >
-                <option value="all" className="bg-gray-800">All Departments</option>
-                {departments.map(dept => (
-                  <option key={dept} value={dept} className="bg-gray-800">{dept}</option>
-                ))}
-              </select>
+        {/* Directory Section */}
+        <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden shadow-2xl mb-20">
+          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <CardTitle className="text-2xl font-black uppercase tracking-tighter flex items-center gap-3">
+                  <Search className="w-6 h-6 text-primary" />
+                  Subject Directory
+                </CardTitle>
+                <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black mt-1">Authorized record of academic entities</CardDescription>
+              </div>
+              <div className="flex gap-4">
+                <div className="relative w-full md:w-80 group">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-hover:text-primary transition-colors" />
+                  <Input
+                    placeholder="Execute search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="bg-white/[0.03] border-white/10 rounded-xl pl-10 h-10 text-xs placeholder:text-white/10 focus:ring-1 focus:ring-primary/20"
+                  />
+                </div>
+                <select
+                  value={selectedDept}
+                  onChange={(e) => setSelectedDept(e.target.value)}
+                  className="bg-white/[0.03] border border-white/10 text-white rounded-xl px-4 py-2 text-[10px] font-black uppercase tracking-widest appearance-none outline-none focus:ring-1 focus:ring-primary/20"
+                >
+                  <option value="all" className="bg-[#0c0d12]">Global Sector</option>
+                  {departments.map(dept => (
+                    <option key={dept} value={dept} className="bg-[#0c0d12]">{dept}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10">
-                    <th className="text-left py-3 px-2 text-gray-400 font-medium">Name</th>
-                    <th className="text-left py-3 px-2 text-gray-400 font-medium">ID</th>
-                    <th className="text-left py-3 px-2 text-gray-400 font-medium">Department</th>
-                    <th className="text-center py-3 px-2 text-gray-400 font-medium">Year</th>
-                    <th className="text-center py-3 px-2 text-gray-400 font-medium">GPA</th>
-                    <th className="text-center py-3 px-2 text-gray-400 font-medium">Attendance</th>
-                    <th className="text-center py-3 px-2 text-gray-400 font-medium">Engagement</th>
-                    <th className="text-center py-3 px-2 text-gray-400 font-medium">Risk</th>
+                  <tr className="bg-white/[0.02]">
+                    <th className="text-left py-6 px-6 text-white/40 uppercase text-[9px] font-black tracking-widest">Designation</th>
+                    <th className="text-left py-6 px-6 text-white/40 uppercase text-[9px] font-black tracking-widest">ID</th>
+                    <th className="text-left py-6 px-6 text-white/40 uppercase text-[9px] font-black tracking-widest">Sector</th>
+                    <th className="text-center py-6 px-6 text-white/40 uppercase text-[9px] font-black tracking-widest">Cycle</th>
+                    <th className="text-center py-6 px-6 text-white/40 uppercase text-[9px] font-black tracking-widest">GPA</th>
+                    <th className="text-center py-6 px-6 text-white/40 uppercase text-[9px] font-black tracking-widest">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredStudents.slice(0, 15).map((student, index) => (
-                    <tr key={student.id || index} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                      <td className="py-3 px-2 font-medium">{student.name}</td>
-                      <td className="py-3 px-2 text-gray-300">{student.student_id}</td>
-                      <td className="py-3 px-2 text-gray-300">{student.department}</td>
-                      <td className="py-3 px-2 text-center">{student.year}</td>
-                      <td className="py-3 px-2 text-center">
-                        <span className={student.gpa >= 3.0 ? 'text-green-400' : student.gpa >= 2.0 ? 'text-yellow-400' : 'text-red-400'}>
+                    <tr key={student.id || index} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                      <td className="py-6 px-6 font-bold tracking-tight text-white group-hover:text-primary transition-colors">{student.name}</td>
+                      <td className="py-6 px-6 text-white/20 font-mono text-[10px]">{student.student_id}</td>
+                      <td className="py-6 px-6 text-white/40 uppercase text-[10px] font-bold tracking-tighter">{student.department}</td>
+                      <td className="py-6 px-6 text-center text-white/40 uppercase text-[10px] font-bold">YR {student.year}</td>
+                      <td className="py-6 px-6 text-center">
+                        <span className={`font-black font-mono ${student.gpa >= 3.0 ? 'text-success' : student.gpa >= 2.0 ? 'text-warning' : 'text-destructive'}`}>
                           {student.gpa}
                         </span>
                       </td>
-                      <td className="py-3 px-2 text-center">
-                        <span className={student.attendance_rate >= 75 ? 'text-green-400' : student.attendance_rate >= 60 ? 'text-yellow-400' : 'text-red-400'}>
-                          {student.attendance_rate}%
-                        </span>
-                      </td>
-                      <td className="py-3 px-2 text-center">{student.engagement_score}/100</td>
-                      <td className="py-3 px-2 text-center">
-                        <Badge variant={student.risk_level === 'high' ? 'destructive' : student.risk_level === 'medium' ? 'default' : 'secondary'}
-                          className={
-                            student.risk_level === 'high' ? 'bg-red-500/20 text-red-300 border-red-500/30' :
-                              student.risk_level === 'medium' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' :
-                                'bg-green-500/20 text-green-300 border-green-500/30'
-                          }>
+                      <td className="py-6 px-6 text-center">
+                        <Badge
+                          className={`rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest border ${student.risk_level === 'high' ? 'bg-destructive/10 text-destructive border-destructive/20' :
+                              student.risk_level === 'medium' ? 'bg-warning/10 text-warning border-warning/20' :
+                                'bg-success/10 text-success border-success/20'
+                            }`}
+                        >
                           {student.risk_level}
                         </Badge>
                       </td>
@@ -380,13 +397,12 @@ const UserDashboard = () => {
                   ))}
                 </tbody>
               </table>
-              {filteredStudents.length > 15 && (
-                <p className="text-gray-400 text-sm mt-3 text-center">Showing 15 of {filteredStudents.length} students</p>
-              )}
-              {filteredStudents.length === 0 && (
-                <p className="text-gray-400 text-center py-6">No students found matching your search.</p>
-              )}
             </div>
+            {filteredStudents.length > 15 && (
+              <div className="p-6 text-center border-t border-white/5">
+                <p className="text-white/20 font-black uppercase tracking-[0.2em] text-[9px]">End of Stream — {filteredStudents.length - 15} additional entities suppressed</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

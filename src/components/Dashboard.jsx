@@ -6,22 +6,19 @@ import { sampleStudents } from "@/data/sampleStudents";
 import { studentAnalyticsAPI } from '../api/studentAnalytics';
 import { geographicAPI } from '../api/geographicAPI';
 import { predictiveAPI } from '../api/predictiveAPI';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
-import { TrendingUp, Users, AlertTriangle, Globe, Brain, Activity, MapPin } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
+import { TrendingUp, Users, AlertTriangle, Globe, Brain, Activity, MapPin, Zap, Cpu, Sparkles, Fingerprint, Target } from 'lucide-react';
 
 const Dashboard = () => {
   const [performanceData, setPerformanceData] = useState(null);
-  const [riskHeatMap, setRiskHeatMap] = useState(null);
   const [departmentData, setDepartmentData] = useState(null);
-  const [globeData, setGlobeData] = useState(null);
   const [aiInsights, setAiInsights] = useState(null);
-  const [realStats, setRealStats] = useState({ total: 0, atRisk: 0, departments: 0, avgGpa: '0.00' });
+  const [realStats, setRealStats] = useState({ total: 0, atRisk: 0, departments: 0, avgGpa: '0.00', avgAttendance: '0' });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch students from Supabase, fallback to sample data
         let students;
         try {
           const { data, error } = await supabase
@@ -45,19 +42,15 @@ const Dashboard = () => {
 
         setRealStats({ total, atRisk, departments, avgGpa, avgAttendance });
 
-        // Fetch analytics data from real APIs
-        const [performance, risk, deptDistribution, globe, insights] = await Promise.all([
+        const [performance, risk, deptDistribution, insights] = await Promise.all([
           studentAnalyticsAPI.getPerformanceTrends(),
           studentAnalyticsAPI.getRiskHeatMap(),
           studentAnalyticsAPI.getDepartmentDistribution(),
-          geographicAPI.getGlobeData(),
           predictiveAPI.getAIInsights()
         ]);
 
         setPerformanceData(performance.data);
-        setRiskHeatMap(risk.data);
         setDepartmentData(deptDistribution.data);
-        setGlobeData(globe.data);
         setAiInsights(insights.data);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
@@ -71,289 +64,192 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-4 mx-auto"></div>
-          <p className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Loading Analytics from Database...
-          </p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
+          <Cpu className="absolute inset-0 m-auto w-8 h-8 text-primary animate-pulse" />
         </div>
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Initializing Neural Mesh</p>
       </div>
     );
   }
 
-  const COLORS = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
+  const COLORS = ['#8b5cf6', '#d946ef', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Header Stats - Now using REAL data */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-blue-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{realStats.total.toLocaleString()}</div>
-            <p className="text-xs text-blue-400">From database</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">At Risk</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-red-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{realStats.atRisk}</div>
-            <p className="text-xs text-red-400">
-              {realStats.total > 0 ? `${((realStats.atRisk / realStats.total) * 100).toFixed(1)}% of total` : 'No data'}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Departments</CardTitle>
-            <Globe className="h-4 w-4 text-cyan-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{realStats.departments}</div>
-            <p className="text-xs text-cyan-400">Active departments</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Average GPA</CardTitle>
-            <Brain className="h-4 w-4 text-purple-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{realStats.avgGpa}</div>
-            <p className="text-xs text-purple-400">Avg Attendance: {realStats.avgAttendance}%</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-10 animate-in fade-in duration-700">
+      {/* Metrics Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: 'Total Entities', value: realStats.total, icon: Users, color: 'text-primary', bg: 'bg-primary/10', sub: 'Verified Nodes' },
+          { label: 'Risk Propagation', value: realStats.atRisk, icon: AlertTriangle, color: 'text-destructive', bg: 'bg-destructive/10', sub: `${((realStats.atRisk / realStats.total) * 100).toFixed(1)}% Saturation` },
+          { label: 'Active Sectors', value: realStats.departments, icon: Target, color: 'text-accent', bg: 'bg-accent/10', sub: 'Academic Blocks' },
+          { label: 'Neural Index', value: realStats.avgGpa, icon: Brain, color: 'text-secondary', bg: 'bg-secondary/10', sub: `AVG Pres: ${realStats.avgAttendance}%` },
+        ].map((stat, i) => (
+          <Card key={i} className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden group hover:border-primary/20 transition-all">
+            <div className={`h-1 w-full opacity-20 group-hover:opacity-100 transition-opacity bg-current ${stat.color}`}></div>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
+                  <stat.icon className="w-5 h-5" />
+                </div>
+                <div className="w-8 h-8 rounded-full bg-white/[0.02] border border-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Activity className="w-3 h-3 text-white/20" />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-3xl font-black tracking-tighter">{stat.value}</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/20">{stat.label}</p>
+                  <span className={`text-[8px] font-black uppercase tracking-widest ${stat.color}`}>{stat.sub}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Performance Trends */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-blue-400" />
-              Performance by Year
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Performance Vector Analysis */}
+        <Card className="lg:col-span-2 bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+            <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              Longitudinal Variance
             </CardTitle>
-            <CardDescription className="text-gray-300">
-              Average GPA and Attendance across academic years
-            </CardDescription>
+            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Neural mapping of merit & engagement trajectories</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             {performanceData && (
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={performanceData.datasets[0].data.map((value, index) => ({
-                  month: performanceData.labels[index],
-                  gpa: value,
-                  attendance: performanceData.datasets[1].data[index]
-                }))}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="month" stroke="#9ca3af" />
-                  <YAxis stroke="#9ca3af" />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#ffffff'
-                    }}
-                  />
-                  <Line type="monotone" dataKey="gpa" stroke="#3b82f6" strokeWidth={3} dot={{ fill: '#3b82f6', strokeWidth: 2, r: 6 }} name="Avg GPA" />
-                  <Line type="monotone" dataKey="attendance" stroke="#8b5cf6" strokeWidth={3} dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 6 }} name="Avg Attendance %" />
-                </LineChart>
-              </ResponsiveContainer>
+              <div className="h-[340px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={performanceData.datasets[0].data.map((value, index) => ({
+                    month: performanceData.labels[index],
+                    gpa: value * 25, // scaling for visual consistency
+                    attendance: performanceData.datasets[1].data[index]
+                  }))}>
+                    <defs>
+                      <linearGradient id="colorGpa" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
+                    <XAxis dataKey="month" stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
+                    <YAxis stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                    />
+                    <Area type="monotone" dataKey="gpa" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorGpa)" />
+                    <Line type="monotone" dataKey="attendance" stroke="#d946ef" strokeWidth={3} dot={{ fill: '#d946ef', r: 4 }} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Activity className="h-5 w-5 text-green-400" />
-              Department Distribution
+        {/* Sector Distribution */}
+        <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+            <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <Activity className="w-5 h-5 text-accent" />
+              Sector Saturation
             </CardTitle>
-            <CardDescription className="text-gray-300">
-              Student distribution across departments
-            </CardDescription>
+            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Entity density per operational circuit</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8 flex items-center justify-center">
             {departmentData && (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={departmentData.chartData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {departmentData.chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1f2937',
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                      color: '#ffffff'
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <div className="h-[340px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={departmentData.chartData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={80}
+                      outerRadius={120}
+                      paddingAngle={8}
+                      dataKey="value"
+                    >
+                      {departmentData.chartData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} opacity={0.8} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="absolute inset-0 m-auto w-16 h-16 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-xs font-black text-white/20 uppercase">Total</span>
+                  <span className="text-xl font-black text-white">{realStats.total}</span>
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Risk Analysis */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-400" />
-            Risk Analysis by Department & Year
-          </CardTitle>
-          <CardDescription className="text-gray-300">
-            Risk distribution across departments and academic years (from real data)
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {riskHeatMap && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {(riskHeatMap.departments || []).map((dept) => (
-                <div key={dept} className="space-y-2">
-                  <h4 className="text-white font-medium text-center text-sm">{dept}</h4>
-                  {(riskHeatMap.years || []).map((year) => {
-                    const data = riskHeatMap.heatMapData.find(d => d.x === dept && d.y === year);
-                    if (!data) return null;
-                    const riskColor = data?.risk === 'high' ? 'bg-red-500/30 border-red-500' :
-                      data?.risk === 'medium' ? 'bg-yellow-500/30 border-yellow-500' :
-                        'bg-green-500/30 border-green-500';
-                    return (
-                      <div key={year} className={`p-3 rounded-lg border ${riskColor} text-center`}>
-                        <div className="text-white text-xs">{year}</div>
-                        <div className="text-white font-bold">{data?.value}%</div>
-                        <div className="text-gray-400 text-xs">{data?.total || 0} students</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
+      {/* AI Intelligence Surface */}
+      <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+        <CardHeader className="p-8 border-b border-white/5">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle className="text-2xl font-black uppercase tracking-tighter flex items-center gap-3">
+                <Brain className="w-7 h-7 text-primary" />
+                Inference Matrix
+              </CardTitle>
+              <CardDescription className="text-white/20 uppercase tracking-widest text-[10px] font-black">Synthesized anomaly detection and heuristic patterns</CardDescription>
             </div>
-          )}
-          {(!riskHeatMap || riskHeatMap.departments?.length === 0) && (
-            <p className="text-gray-400 text-center py-8">No student data available. Upload data to see risk analysis.</p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Department Distribution Details */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-cyan-400" />
-            Department Overview
-          </CardTitle>
-          <CardDescription className="text-gray-300">
-            Detailed breakdown of students by department
-          </CardDescription>
+            <Badge className="bg-primary/10 text-primary border-primary/20 px-4 py-1.5 rounded-xl font-black uppercase tracking-widest text-[9px]">Neural Pulse Active</Badge>
+          </div>
         </CardHeader>
-        <CardContent>
-          {globeData && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {globeData.studentLocations.map((location, index) => (
-                <div key={location.country} className="p-4 rounded-lg bg-white/5 border border-white/10">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-white font-semibold">{location.country}</h4>
-                    <span className={`px-2 py-1 rounded text-xs ${location.students > 0 && location.atRisk / location.students > 0.3 ? 'bg-red-500/20 text-red-300' :
-                      location.students > 0 && location.atRisk / location.students > 0.15 ? 'bg-yellow-500/20 text-yellow-300' :
-                        'bg-green-500/20 text-green-300'
-                      }`}>
-                      {location.students > 0 ? ((location.atRisk / location.students) * 100).toFixed(1) : 0}% at risk
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-sm text-gray-300">
-                    <div className="flex justify-between">
-                      <span>Total Students:</span>
-                      <span className="text-white">{location.students.toLocaleString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>At Risk:</span>
-                      <span className="text-red-300">{location.atRisk}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Year Groups:</span>
-                      <span className="text-cyan-300">{location.universities}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* AI Insights */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center gap-2">
-            <Brain className="h-5 w-5 text-purple-400" />
-            AI-Powered Insights
-          </CardTitle>
-          <CardDescription className="text-gray-300">
-            Real-time analysis based on actual student data
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-8">
           {aiInsights && (
-            <div className="space-y-4">
-              {/* Real-time Stats Bar */}
-              {aiInsights.realTimeStats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                  <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-center">
-                    <div className="text-blue-300 text-xs">Analyzed</div>
-                    <div className="text-white font-bold">{aiInsights.realTimeStats.studentsAnalyzed}</div>
+            <div className="space-y-10">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Network Scan', value: aiInsights.realTimeStats.studentsAnalyzed, color: 'text-primary' },
+                  { label: 'Anomalies', value: aiInsights.realTimeStats.highRiskCount, color: 'text-destructive' },
+                  { label: 'Merit Avg', value: aiInsights.realTimeStats.avgGpa, color: 'text-success' },
+                  { label: 'Sync Rate', value: `${aiInsights.realTimeStats.avgAttendance}%`, color: 'text-secondary' },
+                ].map((stat, i) => (
+                  <div key={i} className="p-6 rounded-3xl bg-white/[0.02] border border-white/5 text-center group hover:bg-white/[0.04] transition-all">
+                    <p className={`text-[9px] font-black uppercase tracking-widest ${stat.color} mb-1`}>{stat.label}</p>
+                    <p className="text-2xl font-black text-white">{stat.value}</p>
                   </div>
-                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-center">
-                    <div className="text-red-300 text-xs">High Risk</div>
-                    <div className="text-white font-bold">{aiInsights.realTimeStats.highRiskCount}</div>
-                  </div>
-                  <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-center">
-                    <div className="text-green-300 text-xs">Avg GPA</div>
-                    <div className="text-white font-bold">{aiInsights.realTimeStats.avgGpa}</div>
-                  </div>
-                  <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/30 text-center">
-                    <div className="text-purple-300 text-xs">Avg Attendance</div>
-                    <div className="text-white font-bold">{aiInsights.realTimeStats.avgAttendance}%</div>
-                  </div>
-                </div>
-              )}
+                ))}
+              </div>
 
-              {aiInsights.insights.map((insight, index) => (
-                <div key={index} className={`p-4 rounded-lg border-l-4 ${insight.severity === 'critical' ? 'bg-red-500/10 border-red-500' :
-                  insight.severity === 'high' ? 'bg-orange-500/10 border-orange-500' :
-                    insight.severity === 'positive' ? 'bg-green-500/10 border-green-500' :
-                      insight.severity === 'info' ? 'bg-blue-500/10 border-blue-500' :
-                        'bg-blue-500/10 border-blue-500'
-                  }`}>
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="text-white font-semibold">{insight.title}</h4>
-                    <span className="text-sm text-gray-300">{insight.affectedStudents} students</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {aiInsights.insights.map((insight, index) => (
+                  <div key={index} className={`p-8 rounded-[32px] border transition-all hover:scale-[1.01] duration-500 relative overflow-hidden group ${insight.severity === 'critical' ? 'bg-destructive/5 border-destructive/10' :
+                      insight.severity === 'high' ? 'bg-warning/5 border-warning/10' :
+                        'bg-white/[0.02] border-white/5'
+                    }`}>
+                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                      {insight.severity === 'critical' ? <AlertTriangle className="w-16 h-16" /> : <Sparkles className="w-16 h-16" />}
+                    </div>
+
+                    <div className="relative z-10 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-2 h-2 rounded-full animate-pulse ${insight.severity === 'critical' ? 'bg-destructive' : 'bg-primary'
+                          }`}></div>
+                        <h4 className="text-xl font-black text-white tracking-tighter uppercase">{insight.title}</h4>
+                      </div>
+                      <p className="text-white/40 text-sm font-bold leading-relaxed uppercase tracking-tight">{insight.description}</p>
+                      <div className="pt-4 flex items-center gap-3">
+                        <div className="px-4 py-2 rounded-xl bg-white/[0.02] border border-white/10 flex items-center gap-2">
+                          <Zap className="w-3.5 h-3.5 text-primary" />
+                          <span className="text-[10px] font-black text-primary uppercase tracking-widest">{insight.recommendation}</span>
+                        </div>
+                        <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">{insight.affectedStudents} Nodes Affected</span>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-gray-300 text-sm mb-2">{insight.description}</p>
-                  <p className="text-blue-300 text-sm font-medium">💡 {insight.recommendation}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </CardContent>

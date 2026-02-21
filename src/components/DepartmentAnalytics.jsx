@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Building, Users, TrendingUp, Globe, Filter, Download, Calendar as CalendarIcon, FileSpreadsheet } from 'lucide-react';
+import { Building, Users, TrendingUp, Globe, Filter, Download, Calendar as CalendarIcon, FileSpreadsheet, Brain, Zap, Target, ArrowUpRight } from 'lucide-react';
 import { format, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear } from 'date-fns';
 import { cn } from "@/lib/utils";
 import * as XLSX from 'xlsx';
@@ -21,6 +21,8 @@ const DepartmentAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [showCustomDate, setShowCustomDate] = useState(false);
   const { toast } = useToast();
+
+  const primaryColors = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#7c3aed', '#6d28d9', '#5b21b6', '#4c1d95'];
 
   // Time period options
   const timePeriods = [
@@ -44,8 +46,7 @@ const DepartmentAnalytics = () => {
   const fetchDepartmentData = async () => {
     try {
       setLoading(true);
-      
-      // Fetch students data with creation dates
+
       const { data: studentsData, error } = await supabase
         .from('students')
         .select('*')
@@ -53,9 +54,8 @@ const DepartmentAnalytics = () => {
 
       if (error) throw error;
 
-      // Process the data by department
       const departmentMap = new Map();
-      
+
       studentsData?.forEach(student => {
         const dept = student.department;
         if (!departmentMap.has(dept)) {
@@ -72,12 +72,11 @@ const DepartmentAnalytics = () => {
             avgEngagement: 0
           });
         }
-        
+
         const deptData = departmentMap.get(dept);
         deptData.students.push(student);
         deptData.total += 1;
-        
-        // Calculate risk levels
+
         const riskLevel = student.risk_level?.toLowerCase() || 'low';
         if (riskLevel === 'high') {
           deptData.atRisk += 1;
@@ -87,14 +86,12 @@ const DepartmentAnalytics = () => {
         } else {
           deptData.lowRisk += 1;
         }
-        
-        // Add to averages
+
         deptData.avgGpa += student.gpa || 0;
         deptData.avgAttendance += student.attendance_rate || 0;
         deptData.avgEngagement += student.engagement_score || 0;
       });
 
-      // Calculate final averages and percentages
       const processedData = Array.from(departmentMap.values()).map(dept => ({
         ...dept,
         percentage: dept.total > 0 ? Math.round((dept.atRisk / dept.total) * 100) : 0,
@@ -105,7 +102,7 @@ const DepartmentAnalytics = () => {
 
       setDepartmentData(processedData);
       setFilteredData(processedData);
-      
+
     } catch (error) {
       console.error('Error fetching department data:', error);
       toast({
@@ -137,8 +134,8 @@ const DepartmentAnalytics = () => {
 
       switch (selectedPeriod) {
         case 'daily':
-          startDate = startOfDay(now);
-          endDate = endOfDay(now);
+          startDate = new Date(now.setHours(0, 0, 0, 0));
+          endDate = new Date(now.setHours(23, 59, 59, 999));
           break;
         case 'weekly':
           startDate = startOfWeek(now);
@@ -166,7 +163,6 @@ const DepartmentAnalytics = () => {
       }
     }
 
-    // Filter departments based on student creation dates within the period
     const filtered = departmentData.map(dept => {
       const studentsInPeriod = dept.students.filter(student => {
         const createdDate = new Date(student.created_at);
@@ -178,7 +174,7 @@ const DepartmentAnalytics = () => {
       }
 
       const atRiskCount = studentsInPeriod.filter(s => s.risk_level?.toLowerCase() === 'high').length;
-      
+
       return {
         ...dept,
         students: studentsInPeriod,
@@ -197,21 +193,8 @@ const DepartmentAnalytics = () => {
     setFilteredData(filtered);
   };
 
-  const startOfDay = (date) => {
-    const result = new Date(date);
-    result.setHours(0, 0, 0, 0);
-    return result;
-  };
-
-  const endOfDay = (date) => {
-    const result = new Date(date);
-    result.setHours(23, 59, 59, 999);
-    return result;
-  };
-
   const exportToExcel = () => {
     try {
-      // Prepare data for Excel
       const excelData = filteredData.map(dept => ({
         'Department': dept.name,
         'Total Students': dept.total,
@@ -223,10 +206,9 @@ const DepartmentAnalytics = () => {
         'Average GPA': dept.avgGpa,
         'Average Attendance': `${dept.avgAttendance}%`,
         'Average Engagement': `${dept.avgEngagement}%`,
-        'Success Rate': `${Math.round((1 - dept.percentage/100) * 100)}%`
+        'Success Rate': `${Math.round((1 - dept.percentage / 100) * 100)}%`
       }));
 
-      // Add summary data
       const totalStudents = filteredData.reduce((sum, dept) => sum + dept.total, 0);
       const totalAtRisk = filteredData.reduce((sum, dept) => sum + dept.atRisk, 0);
       const overallRiskPercentage = totalStudents > 0 ? Math.round((totalAtRisk / totalStudents) * 100) : 0;
@@ -242,76 +224,38 @@ const DepartmentAnalytics = () => {
         'Average GPA': filteredData.length > 0 ? (filteredData.reduce((sum, dept) => sum + parseFloat(dept.avgGpa), 0) / filteredData.length).toFixed(2) : 0,
         'Average Attendance': filteredData.length > 0 ? `${Math.round(filteredData.reduce((sum, dept) => sum + dept.avgAttendance, 0) / filteredData.length)}%` : '0%',
         'Average Engagement': filteredData.length > 0 ? `${Math.round(filteredData.reduce((sum, dept) => sum + dept.avgEngagement, 0) / filteredData.length)}%` : '0%',
-        'Success Rate': `${Math.round((1 - overallRiskPercentage/100) * 100)}%`
+        'Success Rate': `${Math.round((1 - overallRiskPercentage / 100) * 100)}%`
       }];
 
       const allData = [...summaryData, ...excelData];
-
-      // Create workbook and worksheet
       const wb = XLSX.utils.book_new();
       const ws = XLSX.utils.json_to_sheet(allData);
 
-      // Add some styling
-      const range = XLSX.utils.decode_range(ws['!ref']);
-      for (let R = range.s.r; R <= range.e.r; ++R) {
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
-          if (!ws[cellAddress]) continue;
-          
-          // Style the summary row
-          if (R === 0) {
-            ws[cellAddress].s = {
-              font: { bold: true, color: { rgb: "FFFFFF" } },
-              fill: { bgColor: { rgb: "4F46E5" } }
-            };
-          }
-        }
-      }
-
-      // Auto-width columns
       const wscols = Object.keys(allData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }));
       ws['!cols'] = wscols;
 
       XLSX.utils.book_append_sheet(wb, ws, "Department Analytics");
-
-      // Generate filename with current date and period
-      const periodLabel = selectedPeriod === 'custom' && customDateRange.from && customDateRange.to 
-        ? `${format(customDateRange.from, 'yyyy-MM-dd')}_to_${format(customDateRange.to, 'yyyy-MM-dd')}`
-        : selectedPeriod;
-      
-      const filename = `Department_Analytics_${periodLabel}_${format(new Date(), 'yyyy-MM-dd')}.xlsx`;
-      
-      // Save file
+      const filename = `EduAnalytics_Export_${format(new Date(), 'yyyyMMdd_HHmm')}.xlsx`;
       XLSX.writeFile(wb, filename);
-      
-      toast({
-        title: "Success",
-        description: `Department analytics exported to ${filename}`,
-      });
+
+      toast({ title: "Success", description: `Data exported as ${filename}` });
     } catch (error) {
-      console.error('Error exporting to Excel:', error);
-      toast({
-        title: "Error",
-        description: "Failed to export data to Excel.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Export failed", variant: "destructive" });
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin mb-4 mx-auto"></div>
-          <p className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-            Loading Department Analytics...
-          </p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="relative w-20 h-20">
+          <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
+          <Brain className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
         </div>
       </div>
     );
   }
 
-  // Transform data for charts
   const chartData = filteredData.map(dept => ({
     department: dept.name.length > 12 ? dept.name.substring(0, 12) + '...' : dept.name,
     students: dept.total,
@@ -333,25 +277,29 @@ const DepartmentAnalytics = () => {
   const overallRiskPercentage = totalStudents > 0 ? Math.round((totalAtRisk / totalStudents) * 100) : 0;
 
   return (
-    <div className="space-y-8 p-6">
-      {/* Header with Enhanced Controls */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+    <div className="space-y-10 animate-in fade-in duration-700">
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
         <div>
-          <h2 className="text-3xl font-bold text-white mb-2">Department Analytics</h2>
-          <p className="text-gray-300">Comprehensive analysis with time-based tracking and export capabilities</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-4">
+            <Target className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Sector Intelligence</span>
+          </div>
+          <h2 className="text-4xl font-black text-white tracking-tighter uppercase">Department Analytics</h2>
+          <p className="text-white/20 uppercase tracking-[0.2em] text-[10px] font-black mt-1">Multi-dimensional tracking of academic sectors</p>
         </div>
-        
-        <div className="flex flex-wrap gap-2 items-center">
+
+        <div className="flex flex-wrap gap-4 items-center bg-white/[0.02] p-2 rounded-2xl border border-white/5">
           <Select value={selectedPeriod} onValueChange={(value) => {
             setSelectedPeriod(value);
             setShowCustomDate(value === 'custom');
           }}>
-            <SelectTrigger className="w-40 bg-white/10 border-white/20 text-white">
-              <SelectValue placeholder="Select period" />
+            <SelectTrigger className="w-44 bg-white/[0.03] border-white/10 text-white rounded-xl h-11 focus:ring-1 focus:ring-primary/40">
+              <SelectValue placeholder="Period Select" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-[#0c0d12] border-white/10 text-white">
               {timePeriods.map(period => (
-                <SelectItem key={period.value} value={period.value}>
+                <SelectItem key={period.value} value={period.value} className="focus:bg-primary/20">
                   {period.label}
                 </SelectItem>
               ))}
@@ -365,21 +313,21 @@ const DepartmentAnalytics = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-32 justify-start text-left font-normal bg-white/10 border-white/20 text-white",
-                      !customDateRange.from && "text-gray-400"
+                      "w-36 justify-start text-left font-bold bg-white/[0.03] border-white/10 text-white/60 h-11 rounded-xl hover:text-white",
+                      !customDateRange.from && "text-white/20"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {customDateRange.from ? format(customDateRange.from, "MMM dd") : "From"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0 border-white/10" align="start">
                   <Calendar
                     mode="single"
                     selected={customDateRange.from}
                     onSelect={(date) => setCustomDateRange(prev => ({ ...prev, from: date }))}
                     initialFocus
-                    className="pointer-events-auto"
+                    className="bg-[#0c0d12] text-white rounded-xl"
                   />
                 </PopoverContent>
               </Popover>
@@ -389,219 +337,220 @@ const DepartmentAnalytics = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-32 justify-start text-left font-normal bg-white/10 border-white/20 text-white",
-                      !customDateRange.to && "text-gray-400"
+                      "w-36 justify-start text-left font-bold bg-white/[0.03] border-white/10 text-white/60 h-11 rounded-xl hover:text-white",
+                      !customDateRange.to && "text-white/20"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {customDateRange.to ? format(customDateRange.to, "MMM dd") : "To"}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0 border-white/10" align="start">
                   <Calendar
                     mode="single"
                     selected={customDateRange.to}
                     onSelect={(date) => setCustomDateRange(prev => ({ ...prev, to: date }))}
                     initialFocus
-                    className="pointer-events-auto"
+                    className="bg-[#0c0d12] text-white rounded-xl"
                   />
                 </PopoverContent>
               </Popover>
             </div>
           )}
 
-          <Button 
+          <Button
             onClick={exportToExcel}
-            className="bg-green-600 hover:bg-green-700 text-white"
+            className="bg-primary hover:bg-primary/90 text-white rounded-xl h-11 px-6 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95"
           >
             <FileSpreadsheet className="h-4 w-4 mr-2" />
-            Export Excel
+            Export Data
           </Button>
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Total Departments</CardTitle>
-            <Building className="h-4 w-4 text-blue-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{filteredData.length}</div>
-            <p className="text-xs text-blue-400">Active departments</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-green-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{totalStudents.toLocaleString()}</div>
-            <p className="text-xs text-green-400">In selected period</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Overall Risk</CardTitle>
-            <TrendingUp className="h-4 w-4 text-yellow-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{overallRiskPercentage}%</div>
-            <p className="text-xs text-yellow-400">{totalAtRisk} students at risk</p>
-          </CardContent>
-        </Card>
-
-        <Card className="glass-card neon-glow">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white">Success Rate</CardTitle>
-            <Globe className="h-4 w-4 text-cyan-400" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{Math.round((1 - overallRiskPercentage/100) * 100)}%</div>
-            <p className="text-xs text-cyan-400">Overall success</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Department Performance Chart */}
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Building className="h-5 w-5 text-purple-400" />
-              Department Performance
-            </CardTitle>
-            <CardDescription className="text-gray-300">
-              Students vs Risk Analysis
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <ComposedChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis 
-                  dataKey="department" 
-                  stroke="#9ca3af"
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                />
-                <YAxis yAxisId="left" stroke="#9ca3af" />
-                <YAxis yAxisId="right" orientation="right" stroke="#9ca3af" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1f2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#ffffff'
-                  }}
-                />
-                <Bar yAxisId="left" dataKey="students" fill="#3b82f6" name="Total Students" />
-                <Bar yAxisId="left" dataKey="atRisk" fill="#ef4444" name="At Risk" />
-                <Line yAxisId="right" type="monotone" dataKey="riskPercentage" stroke="#f59e0b" strokeWidth={2} name="Risk %" />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Risk Distribution Pie Chart */}
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-yellow-400" />
-              Risk Distribution
-            </CardTitle>
-            <CardDescription className="text-gray-300">
-              Overall student risk levels
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={riskDistributionData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {riskDistributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1f2937', 
-                    border: '1px solid #374151',
-                    borderRadius: '8px',
-                    color: '#ffffff'
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Department Details Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredData.map((dept, index) => (
-          <Card key={dept.name} className="glass-card hover-scale transition-all duration-300">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <CardTitle className="text-white text-lg">{dept.name}</CardTitle>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  dept.percentage > 20 ? 'bg-red-500/20 text-red-300' :
-                  dept.percentage > 10 ? 'bg-yellow-500/20 text-yellow-300' :
-                  'bg-green-500/20 text-green-300'
-                }`}>
-                  {dept.percentage}% risk
+      {/* Summary Matrix */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: 'Active Sectors', value: filteredData.length, icon: Building, color: 'text-primary', glow: 'shadow-primary/10' },
+          { label: 'Total Entities', value: totalStudents.toLocaleString(), icon: Users, color: 'text-secondary', glow: 'shadow-secondary/10' },
+          { label: 'Variance Index', value: `${overallRiskPercentage}%`, icon: TrendingUp, color: 'text-destructive', glow: 'shadow-destructive/10' },
+          { label: 'Retention Prob.', value: `${Math.round((1 - overallRiskPercentage / 100) * 100)}%`, icon: Globe, color: 'text-success', glow: 'shadow-success/10' },
+        ].map((stat, i) => (
+          <Card key={i} className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden group hover:border-primary/20 transition-all">
+            <div className="h-1 w-full bg-white/5 group-hover:bg-primary transition-colors"></div>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className={`p-3 rounded-xl bg-white/[0.03] border border-white/5 ${stat.color} group-hover:scale-110 transition-transform`}>
+                  <stat.icon className="w-5 h-5" />
                 </div>
+                <ArrowUpRight className="w-4 h-4 text-white/10 group-hover:text-white/30" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-3xl font-black tracking-tighter">{stat.value}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/20">{stat.label}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Analytics Visualization Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Performance Composed Chart */}
+        <Card className="lg:col-span-2 bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+            <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <Zap className="w-5 h-5 text-primary" />
+              Comparative Sector Efficiency
+            </CardTitle>
+            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Subject volume vs Heuristic risk variance</CardDescription>
+          </CardHeader>
+          <CardContent className="p-8">
+            <div className="h-[380px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={chartData}>
+                  <defs>
+                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                      <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.2} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
+                  <XAxis
+                    dataKey="department"
+                    stroke="rgba(255,255,255,0.2)"
+                    fontSize={10}
+                    fontWeight="black"
+                    tickLine={false}
+                    axisLine={false}
+                    dy={10}
+                    height={60}
+                  />
+                  <YAxis yAxisId="left" stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
+                  <YAxis yAxisId="right" orientation="right" stroke="rgba(255,255,255,0.2)" fontSize={10} fontWeight="black" tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '12px', fontWeight: 'black' }}
+                    cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                  />
+                  <Bar yAxisId="left" dataKey="students" fill="url(#barGradient)" radius={[6, 6, 0, 0]} name="Volume" barSize={32} />
+                  <Bar yAxisId="left" dataKey="atRisk" fill="#ef4444" radius={[6, 6, 0, 0]} name="Critical" barSize={24} opacity={0.6} />
+                  <Line yAxisId="right" type="monotone" dataKey="riskPercentage" stroke="#f59e0b" strokeWidth={3} dot={{ r: 4, fill: '#f59e0b', strokeWidth: 0 }} name="Risk Velocity" />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Global Distribution Pie Chart */}
+        <Card className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden shadow-2xl">
+          <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+            <CardTitle className="text-xl font-black uppercase tracking-tighter flex items-center gap-3">
+              <Globe className="w-5 h-5 text-secondary" />
+              Global Risk Allocation
+            </CardTitle>
+            <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black">Aggregate subject security breakdown</CardDescription>
+          </CardHeader>
+          <CardContent className="p-8 flex flex-col justify-between h-[calc(100%-110px)]">
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={riskDistributionData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={100}
+                    paddingAngle={8}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {riskDistributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} opacity={0.8} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#0c0d12', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="space-y-4">
+              {riskDistributionData.map((item, i) => (
+                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{item.name}</span>
+                  </div>
+                  <span className="text-sm font-black tracking-tight">{item.value} Subjects</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Sector Intelligence Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+        {filteredData.map((dept, index) => (
+          <Card key={dept.name} className="bg-card/40 backdrop-blur-3xl border-white/5 text-white overflow-hidden hover:border-primary/40 transition-all duration-500 group">
+            <div className={`h-1.5 w-full ${dept.percentage > 25 ? 'bg-destructive' :
+                dept.percentage > 10 ? 'bg-warning' :
+                  'bg-success'
+              } opacity-40 group-hover:opacity-100 transition-opacity`}></div>
+            <CardHeader className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg font-black uppercase tracking-tight group-hover:text-primary transition-colors">{dept.name}</CardTitle>
+                  <p className="text-[9px] font-black text-white/20 uppercase tracking-widest mt-1">Sector Node Alpha-{index}</p>
+                </div>
+                <Badge className={`rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest border ${dept.percentage > 25 ? 'bg-destructive/10 text-destructive border-destructive/20' :
+                    dept.percentage > 10 ? 'bg-warning/10 text-warning border-warning/20' :
+                      'bg-success/10 text-success border-success/20'
+                  }`}>
+                  {dept.percentage}% Variance
+                </Badge>
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-6 pt-0">
+              <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-white">{dept.total}</div>
-                    <div className="text-xs text-gray-400">Total Students</div>
+                  <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <div className="text-2xl font-black tracking-tighter text-white">{dept.total}</div>
+                    <div className="text-[9px] text-white/20 font-black uppercase tracking-widest">Active Units</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-red-400">{dept.atRisk}</div>
-                    <div className="text-xs text-gray-400">At Risk</div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-300">Avg GPA</span>
-                    <span className="text-white font-medium">{dept.avgGpa}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-300">Avg Attendance</span>
-                    <span className="text-white font-medium">{dept.avgAttendance}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-300">Avg Engagement</span>
-                    <span className="text-white font-medium">{dept.avgEngagement}%</span>
+                  <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <div className="text-2xl font-black tracking-tighter text-destructive">{dept.atRisk}</div>
+                    <div className="text-[9px] text-white/20 font-black uppercase tracking-widest">Critical Alert</div>
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-white/10">
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-green-400">
-                      {Math.round((1 - dept.percentage/100) * 100)}%
+                <div className="space-y-3">
+                  {[
+                    { label: 'GPA Index', val: dept.avgGpa, max: 10, color: 'bg-primary' },
+                    { label: 'Presence', val: dept.avgAttendance, max: 100, color: 'bg-secondary' },
+                    { label: 'Synergy', val: dept.avgEngagement, max: 100, color: 'bg-accent' },
+                  ].map((metric, i) => (
+                    <div key={i} className="space-y-1.5">
+                      <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-white/40">{metric.label}</span>
+                        <span className="text-white">{metric.val}{metric.max === 100 ? '%' : ''}</span>
+                      </div>
+                      <div className="h-1 w-full bg-white/[0.03] rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full ${metric.color}`} style={{ width: `${(metric.val / metric.max) * 100}%` }}></div>
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-400">Success Rate</div>
+                  ))}
+                </div>
+
+                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+                  <div>
+                    <div className="text-xl font-black text-success tracking-tighter">
+                      {Math.round((1 - dept.percentage / 100) * 100)}%
+                    </div>
+                    <div className="text-[9px] text-white/20 font-black uppercase tracking-widest">Success Probability</div>
                   </div>
+                  <Brain className="w-8 h-8 text-white/[0.02] group-hover:text-primary/10 transition-colors" />
                 </div>
               </div>
             </CardContent>

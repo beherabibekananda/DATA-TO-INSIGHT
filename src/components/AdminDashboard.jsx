@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +17,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { Trash2, Edit, Plus, Users, GraduationCap, Database, Home, LogOut, Upload, Brain } from 'lucide-react';
+import { Trash2, Edit, Plus, Users, GraduationCap, Database, Home, LogOut, Upload, Brain, Activity, ShieldCheck, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import StudentManagementForm from './StudentManagementForm';
 import DropoutPrediction from './DropoutPrediction';
@@ -182,293 +183,305 @@ const AdminDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-[#02040a] flex items-center justify-center">
+        <div className="relative w-24 h-24">
+          <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
+          <Brain className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
-            <p className="text-gray-300 mt-1">Welcome back, {profile?.full_name || user?.email}</p>
+    <div className="min-h-screen bg-[#02040a] text-white p-6 relative overflow-hidden">
+      {/* Dynamic Background Effects */}
+      <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-secondary/10 blur-[150px] rounded-full"></div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex justify-between items-center mb-12">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center group hover:bg-white/[0.05] transition-all">
+              <ShieldCheck className="w-8 h-8 text-primary" />
+            </div>
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-4xl font-black tracking-tighter uppercase whitespace-nowrap">Admin Core</h1>
+                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-[10px] font-black uppercase tracking-widest px-3">L4 Clearance</Badge>
+              </div>
+              <p className="text-white/20 uppercase tracking-[0.2em] text-[10px] font-black mt-1">
+                Authorized Node: {profile?.full_name || user?.email}
+              </p>
+            </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             <Button
               onClick={handleBackToHome}
-              variant="outline"
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              className="bg-white/[0.03] border border-white/5 text-white/40 hover:text-white hover:bg-white/[0.05] rounded-xl px-6 h-12 transition-all font-bold uppercase tracking-widest text-xs"
             >
               <Home className="w-4 h-4 mr-2" />
-              Home
+              Terminal
             </Button>
             <Button
               onClick={handleSignOut}
-              variant="outline"
-              className="bg-red-500/20 border-red-500/50 text-red-300 hover:bg-red-500/30"
+              className="bg-destructive/10 border border-destructive/20 text-destructive hover:bg-destructive/20 rounded-xl px-6 h-12 transition-all font-bold uppercase tracking-widest text-xs"
             >
               <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
+              Sever Connection
             </Button>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Quick Actions Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           <Button
             onClick={() => navigate('/createUser')}
-            className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 h-16"
+            className="bg-primary/10 hover:bg-primary/20 border border-primary/20 text-primary h-20 rounded-2xl transition-all group overflow-hidden relative"
           >
-            <Plus className="w-5 h-5 mr-2" />
-            Create New Student
+            <Plus className="w-6 h-6 mr-3 relative z-10 group-hover:scale-110 transition-transform" />
+            <span className="font-black uppercase tracking-widest text-sm relative z-10">Register Subject</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
           </Button>
           <Button
             onClick={() => navigate('/UploadStudentsDataFile')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 h-16"
+            className="bg-secondary/10 hover:bg-secondary/20 border border-secondary/20 text-secondary h-20 rounded-2xl transition-all group overflow-hidden relative"
           >
-            <Upload className="w-5 h-5 mr-2" />
-            Upload Data File
+            <Upload className="w-6 h-6 mr-3 relative z-10 group-hover:scale-110 transition-transform" />
+            <span className="font-black uppercase tracking-widest text-sm relative z-10">Inject Dataset</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-secondary to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
           </Button>
           <Button
             onClick={() => navigate('/')}
-            variant="outline"
-            className="bg-white/10 border-white/20 text-white hover:bg-white/20 h-16"
+            className="bg-accent/10 hover:bg-accent/20 border border-accent/20 text-accent h-20 rounded-2xl transition-all group overflow-hidden relative"
           >
-            <Database className="w-5 h-5 mr-2" />
-            View Public Dashboard
+            <Database className="w-6 h-6 mr-3 relative z-10 group-hover:scale-110 transition-transform" />
+            <span className="font-black uppercase tracking-widest text-sm relative z-10">Sync Mainframe</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-accent to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
           </Button>
           <Button
             onClick={() => setActiveTab('dropout-prediction')}
-            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 h-16"
+            className="bg-warning/10 hover:bg-warning/20 border border-warning/20 text-warning h-20 rounded-2xl transition-all group overflow-hidden relative"
           >
-            <Brain className="w-5 h-5 mr-2" />
-            Dropout Checker
+            <Brain className="w-6 h-6 mr-3 relative z-10 group-hover:scale-110 transition-transform" />
+            <span className="font-black uppercase tracking-widest text-sm relative z-10">Neural Filter</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-warning to-transparent opacity-0 group-hover:opacity-10 transition-opacity"></div>
           </Button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-blue-400" />
+        {/* High-Level Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden group">
+            <div className="h-1 w-full bg-primary/40"></div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Registered Nodes</CardTitle>
+              <Users className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{users.length}</div>
+              <div className="text-4xl font-black group-hover:text-primary transition-colors">{users.length}</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-              <GraduationCap className="h-4 w-4 text-purple-400" />
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden group">
+            <div className="h-1 w-full bg-secondary/40"></div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Active Subjects</CardTitle>
+              <GraduationCap className="h-4 w-4 text-secondary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{students.length}</div>
+              <div className="text-4xl font-black group-hover:text-secondary transition-colors">{students.length}</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Database Status</CardTitle>
-              <Database className="h-4 w-4 text-green-400" />
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden group">
+            <div className="h-1 w-full bg-success/40"></div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Network Status</CardTitle>
+              <Activity className="h-4 w-4 text-success" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-400">Online</div>
+              <div className="text-4xl font-black text-success tracking-tighter">ONLINE</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex space-x-4 mb-6">
-          <Button
+        {/* Navigation Tabs */}
+        <div className="flex flex-wrap gap-2 mb-8 bg-white/[0.02] p-2 rounded-2xl border border-white/5 inline-flex">
+          <button
             onClick={() => setActiveTab('students')}
-            variant={activeTab === 'students' ? 'default' : 'outline'}
-            className={activeTab === 'students' ?
-              'bg-blue-600 hover:bg-blue-700' :
-              'bg-white/10 border-white/20 text-white hover:bg-white/20'
-            }
+            className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'students' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/20 hover:text-white hover:bg-white/[0.03]'}`}
           >
-            Manage Students
-          </Button>
-          <Button
+            Subject Directory
+          </button>
+          <button
             onClick={() => setActiveTab('add-student')}
-            variant={activeTab === 'add-student' ? 'default' : 'outline'}
-            className={activeTab === 'add-student' ?
-              'bg-purple-600 hover:bg-purple-700' :
-              'bg-white/10 border-white/20 text-white hover:bg-white/20'
-            }
+            className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'add-student' ? 'bg-secondary text-white shadow-lg shadow-secondary/20' : 'text-white/20 hover:text-white hover:bg-white/[0.03]'}`}
           >
-            Add Students
-          </Button>
-          <Button
+            Creation Protocol
+          </button>
+          <button
             onClick={() => setActiveTab('users')}
-            variant={activeTab === 'users' ? 'default' : 'outline'}
-            className={activeTab === 'users' ?
-              'bg-green-600 hover:bg-green-700' :
-              'bg-white/10 border-white/20 text-white hover:bg-white/20'
-            }
+            className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'users' ? 'bg-success text-white shadow-lg shadow-success/20' : 'text-white/20 hover:text-white hover:bg-white/[0.03]'}`}
           >
-            Manage Users
-          </Button>
-          <Button
+            Node Management
+          </button>
+          <button
             onClick={() => setActiveTab('dropout-prediction')}
-            variant={activeTab === 'dropout-prediction' ? 'default' : 'outline'}
-            className={activeTab === 'dropout-prediction' ?
-              'bg-cyan-600 hover:bg-cyan-700' :
-              'bg-white/10 border-white/20 text-white hover:bg-white/20'
-            }
+            className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dropout-prediction' ? 'bg-warning text-white shadow-lg shadow-warning/20' : 'text-white/20 hover:text-white hover:bg-white/[0.03]'}`}
           >
-            🧠 Dropout Checker
-          </Button>
+            Neural Diagnostics
+          </button>
         </div>
 
-        {/* Add Students Tab */}
-        {activeTab === 'add-student' && (
-          <StudentManagementForm onStudentAdded={fetchStudents} />
-        )}
+        {/* Dynamic Content Area */}
+        <div className="pb-20">
+          {activeTab === 'add-student' && (
+            <StudentManagementForm onStudentAdded={fetchStudents} />
+          )}
 
-        {/* Dropout Prediction Tab */}
-        {activeTab === 'dropout-prediction' && (
-          <DropoutPrediction />
-        )}
+          {activeTab === 'dropout-prediction' && (
+            <DropoutPrediction />
+          )}
 
-        {/* Students Tab */}
-        {activeTab === 'students' && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader>
-              <CardTitle>Student Management</CardTitle>
-              <CardDescription className="text-gray-300">
-                View and manage all students in the system
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-white/20">
-                      <TableHead className="text-white">Student ID</TableHead>
-                      <TableHead className="text-white">Name</TableHead>
-                      <TableHead className="text-white">Department</TableHead>
-                      <TableHead className="text-white">Year</TableHead>
-                      <TableHead className="text-white">GPA</TableHead>
-                      <TableHead className="text-white">Risk Level</TableHead>
-                      <TableHead className="text-white">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {students.map((student) => (
-                      <TableRow key={student.id} className="border-white/20">
-                        <TableCell className="text-white">{student.student_id}</TableCell>
-                        <TableCell className="text-white">{student.name}</TableCell>
-                        <TableCell className="text-white">{student.department}</TableCell>
-                        <TableCell className="text-white">{student.year}</TableCell>
-                        <TableCell className="text-white">{student.gpa || 'N/A'}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              student.risk_level === 'high' ? 'destructive' :
-                                student.risk_level === 'medium' ? 'default' : 'secondary'
-                            }
-                          >
-                            {student.risk_level}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteStudent(student.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
+          {activeTab === 'students' && (
+            <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden shadow-2xl">
+              <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <CardTitle className="text-2xl font-black uppercase tracking-tighter">Subject Directory</CardTitle>
+                    <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black mt-1">
+                      Comprehensive record of active academic subjects
+                    </CardDescription>
+                  </div>
+                  <div className="relative w-72">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <Input placeholder="Filter records..." className="bg-white/[0.03] border-white/10 rounded-xl pl-10 h-10 text-xs placeholder:text-white/10" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader className="bg-white/[0.02]">
+                      <TableRow className="border-white/5 hover:bg-transparent">
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Identifier</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Subject Name</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Sector</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Cycle</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">GPA Index</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Risk Profile</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6 text-right">Action</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Users Tab */}
-        {activeTab === 'users' && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
-            <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription className="text-gray-300">
-                Manage all registered users and their roles
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-white/20">
-                      <TableHead className="text-white">Name</TableHead>
-                      <TableHead className="text-white">Email</TableHead>
-                      <TableHead className="text-white">Role</TableHead>
-                      <TableHead className="text-white">Created</TableHead>
-                      <TableHead className="text-white">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((user) => (
-                      <TableRow key={user.id} className="border-white/20">
-                        <TableCell className="text-white">
-                          {user.full_name || 'N/A'}
-                        </TableCell>
-                        <TableCell className="text-white">{user.email}</TableCell>
-                        <TableCell>
-                          {editingUser === user.id ? (
-                            <select
-                              value={user.role}
-                              onChange={(e) => updateUserRole(user.id, e.target.value)}
-                              className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white"
+                    </TableHeader>
+                    <TableBody>
+                      {students.map((student) => (
+                        <TableRow key={student.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                          <TableCell className="p-6 font-mono text-[10px] text-white/40">{student.student_id}</TableCell>
+                          <TableCell className="p-6 font-bold text-sm tracking-tight">{student.name}</TableCell>
+                          <TableCell className="p-6 text-white/40 text-xs uppercase">{student.department}</TableCell>
+                          <TableCell className="p-6 text-white/40 text-xs">YEAR {student.year}</TableCell>
+                          <TableCell className="p-6 text-primary font-black font-mono">{student.gpa || '0.00'}</TableCell>
+                          <TableCell className="p-6">
+                            <Badge
+                              className={`rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest border ${student.risk_level === 'high' ? 'bg-destructive/10 text-destructive border-destructive/20' :
+                                  student.risk_level === 'medium' ? 'bg-warning/10 text-warning border-warning/20' :
+                                    'bg-success/10 text-success border-success/20'
+                                }`}
                             >
-                              <option value="user">User</option>
-                              <option value="admin">Admin</option>
-                            </select>
-                          ) : (
-                            <Badge variant={user.role === 'admin' ? 'destructive' : 'secondary'}>
-                              {user.role}
+                              {student.risk_level}
                             </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-white">
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
+                          </TableCell>
+                          <TableCell className="p-6 text-right">
                             <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setEditingUser(editingUser === user.id ? null : user.id)}
-                              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => deleteUser(user.id)}
+                              size="icon"
+                              className="bg-destructive/10 text-destructive hover:bg-destructive shadow-lg shadow-destructive/10 rounded-xl transition-all"
+                              onClick={() => deleteStudent(student.id)}
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
-                          </div>
-                        </TableCell>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {activeTab === 'users' && (
+            <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white overflow-hidden shadow-2xl">
+              <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+                <CardTitle className="text-2xl font-black uppercase tracking-tighter">Node Hierarchy</CardTitle>
+                <CardDescription className="text-white/20 uppercase tracking-widest text-[9px] font-black mt-1">
+                  Access level and permission matrix for network users
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader className="bg-white/[0.02]">
+                      <TableRow className="border-white/5 hover:bg-transparent">
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Entity Identity</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Digital Address</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Authorization</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6">Deployment Date</TableHead>
+                        <TableHead className="text-white/40 uppercase text-[9px] font-black tracking-widest p-6 text-right">Ops</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow key={user.id} className="border-white/5 hover:bg-white/[0.02] transition-colors">
+                          <TableCell className="p-6 font-bold text-sm tracking-tight">
+                            {user.full_name || 'UNDEFINED'}
+                          </TableCell>
+                          <TableCell className="p-6 text-white/40 font-mono text-xs">{user.email}</TableCell>
+                          <TableCell className="p-6">
+                            {editingUser === user.id ? (
+                              <select
+                                value={user.role}
+                                onChange={(e) => updateUserRole(user.id, e.target.value)}
+                                className="bg-[#0c0d12] border border-white/10 rounded-xl px-4 py-2 text-xs text-white uppercase font-black"
+                              >
+                                <option value="user">User Node</option>
+                                <option value="admin">Admin Proxy</option>
+                              </select>
+                            ) : (
+                              <Badge className={`rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-widest border ${user.role === 'admin' ? 'bg-primary/20 text-primary border-primary/20' : 'bg-white/5 text-white/40 border-white/10'}`}>
+                                {user.role} Authorization
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="p-6 text-white/40 text-[10px] uppercase font-bold">
+                            {new Date(user.created_at).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="p-6 text-right">
+                            <div className="flex justify-end space-x-2">
+                              <Button
+                                size="icon"
+                                className="bg-white/[0.03] border border-white/5 text-white/40 hover:text-white rounded-xl transition-all"
+                                onClick={() => setEditingUser(editingUser === user.id ? null : user.id)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                className="bg-destructive/10 text-destructive hover:bg-destructive rounded-xl transition-all"
+                                onClick={() => deleteUser(user.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );

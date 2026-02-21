@@ -75,118 +75,96 @@ const AdminLogin = ({ onLoginSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 flex items-center justify-center p-4">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+    <div className="min-h-screen bg-[#02040a] flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Dynamic Background Accents */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <div className="absolute inset-0 bg-black/20"></div>
-
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border-white/20 text-white relative z-10 shadow-2xl shadow-black/30">
-        <CardHeader className="text-center pb-2">
-          {/* Shield icon */}
-          <div className="mx-auto mb-3 w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <Card className="w-full max-w-[420px] bg-card/40 backdrop-blur-2xl border-white/5 text-white relative z-10 shadow-[0_0_50px_rgba(0,0,0,0.5)] border-t-white/10">
+        <CardHeader className="text-center pt-10 pb-6">
+          <div className="mx-auto mb-6 w-20 h-20 rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-secondary flex items-center justify-center shadow-[0_0_30px_rgba(139,92,246,0.3)] rotate-3 hover:rotate-0 transition-transform duration-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
             </svg>
           </div>
 
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Admin Access
+          <CardTitle className="text-3xl font-extrabold tracking-tight text-white mb-2">
+            Admin Portal
           </CardTitle>
-          <CardDescription className="text-gray-300 text-sm">
-            Enter your admin email to access the dashboard
+          <CardDescription className="text-muted-foreground text-base">
+            Secure access for authorized personnel only
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-5">
+        <CardContent className="px-8 pb-10">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="admin-email" className="text-white/90 text-sm font-medium">Admin Email</Label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                  </svg>
-                </div>
+              <Label htmlFor="admin-email" className="text-sm font-semibold tracking-wide uppercase text-white/50 ml-1">Email Address</Label>
+              <div className="relative group">
                 <Input
                   id="admin-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pl-10 h-12 rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400/50 transition-all"
-                  placeholder="Enter your admin email"
+                  className="bg-white/[0.03] border-white/10 text-white placeholder:text-white/20 h-14 rounded-2xl focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 pl-4 text-lg"
+                  placeholder="name@company.com"
                 />
+                <div className="absolute inset-0 rounded-2xl bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
               </div>
             </div>
 
             {error && (
-              <Alert className="bg-red-500/15 border-red-500/40 rounded-xl">
-                <AlertDescription className="text-red-300 text-sm flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-                  </svg>
-                  {error}
-                </AlertDescription>
-              </Alert>
+              <div className="bg-destructive/10 border border-destructive/20 text-destructive-foreground p-4 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0 text-destructive" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+                <p className="text-sm font-medium">{error}</p>
+              </div>
             )}
 
             {success && (
-              <Alert className="bg-green-500/15 border-green-500/40 rounded-xl">
-                <AlertDescription className="text-green-300 text-sm flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                  </svg>
-                  {success}
-                </AlertDescription>
-              </Alert>
+              <div className="bg-success/10 border border-success/20 text-success p-4 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                <p className="text-sm font-medium">{success}</p>
+              </div>
             )}
 
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl font-semibold text-base shadow-lg shadow-blue-500/25 transition-all duration-300 hover:shadow-blue-500/40 hover:scale-[1.02]"
+              className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold text-lg shadow-xl shadow-primary/20 transition-all duration-300 hover:scale-[1.01] active:scale-[0.98]"
               disabled={loading}
             >
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Verifying...
+                  Authenticating...
                 </span>
               ) : (
-                <span className="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                  </svg>
-                  Login as Admin
-                </span>
+                "Continue to Dashboard"
               )}
             </Button>
 
-            <Button
+            <button
               type="button"
-              variant="outline"
-              className="w-full h-10 bg-white/5 border-white/15 text-white hover:bg-white/15 rounded-xl transition-all"
+              className="w-full text-white/40 hover:text-white/60 text-sm font-medium transition-colors pt-2"
               onClick={handleBackToHome}
             >
-              ← Back to Home
-            </Button>
+              ← Return to public site
+            </button>
           </form>
 
-          {/* Security footer */}
-          <div className="mt-6 pt-4 border-t border-white/10">
-            <p className="text-center text-xs text-gray-500 flex items-center justify-center gap-1.5">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-              </svg>
-              Admin Authorized Access Only
-            </p>
+          <div className="mt-10 pt-6 border-t border-white/5 flex items-center justify-center gap-4 text-white/20">
+            <span className="text-[10px] uppercase font-bold tracking-[0.2em]">End-to-End Encryption</span>
+            <div className="w-1 h-1 rounded-full bg-white/20"></div>
+            <span className="text-[10px] uppercase font-bold tracking-[0.2em]">Secure Session</span>
           </div>
         </CardContent>
       </Card>

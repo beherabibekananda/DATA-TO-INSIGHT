@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Upload, FileSpreadsheet, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Upload, FileSpreadsheet, CheckCircle, AlertCircle, Activity, Brain } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 
@@ -166,39 +166,47 @@ const UploadStudentsDataFile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#02040a] p-6 relative overflow-hidden">
+      {/* Dynamic Background Effects */}
+      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/10 blur-[120px] rounded-full"></div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex items-center gap-4 mb-8">
           <Button
             onClick={() => navigate('/adminDashboard')}
-            variant="outline"
-            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            className="bg-white/[0.03] border border-white/5 text-white/60 hover:text-white hover:bg-white/[0.05] rounded-xl px-5 transition-all"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            Control Center
           </Button>
-          <h1 className="text-3xl font-bold text-white">Upload Students Data File</h1>
+          <div className="h-10 w-[1px] bg-white/5"></div>
+          <h1 className="text-3xl font-black text-white tracking-tight">Data Injection Terminal</h1>
         </div>
 
         {/* Upload Section */}
-        <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white mb-6">
+        <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white mb-8 overflow-hidden">
+          <div className="h-1 w-full bg-gradient-to-r from-primary to-secondary"></div>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
-              Bulk Student Data Upload
+            <CardTitle className="flex items-center gap-3 text-lg font-bold">
+              <Upload className="h-5 w-5 text-primary" />
+              Dataset Synchronizer
             </CardTitle>
-            <CardDescription className="text-gray-300">
-              Upload CSV or Excel files containing student information
+            <CardDescription className="text-white/40 uppercase tracking-widest text-[10px] font-bold">
+              Secure payload delivery for academic analysis
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* File Upload Area */}
-              <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center">
-                <FileSpreadsheet className="h-16 w-16 mx-auto mb-4 text-blue-400" />
-                <p className="text-gray-300 mb-4 text-lg">
-                  Drag and drop your file here, or click to browse
+              <div className="border-2 border-dashed border-white/10 rounded-3xl p-12 text-center group hover:border-primary/40 transition-all bg-white/[0.01]">
+                <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                  <FileSpreadsheet className="h-10 w-10 text-primary" />
+                </div>
+                <p className="text-white font-bold text-xl mb-2">
+                  Drop Dataset Payload Here
                 </p>
+                <p className="text-white/30 text-sm mb-8">Support for CSV, XLSX, and UCI standard formats</p>
                 <input
                   type="file"
                   accept=".csv,.xlsx,.xls"
@@ -209,51 +217,38 @@ const UploadStudentsDataFile = () => {
                 />
                 <label
                   htmlFor="file-upload"
-                  className="cursor-pointer inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg transition-colors text-white font-medium"
+                  className="cursor-pointer inline-flex items-center px-8 py-4 bg-primary hover:bg-primary/90 rounded-2xl transition-all text-white font-black shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
                 >
-                  {uploading ? 'Processing...' : 'Choose File'}
+                  {uploading ? 'Processing Neural Sync...' : 'Browse Local Files'}
                 </label>
                 {fileName && (
-                  <p className="mt-4 text-blue-300">Selected: {fileName}</p>
+                  <div className="mt-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
+                    <CheckCircle className="w-3 h-3" />
+                    Target: {fileName}
+                  </div>
                 )}
-              </div>
-
-              {/* Expected Format */}
-              <div className="bg-black/20 rounded-lg p-4">
-                <h3 className="font-medium mb-2 text-white">Expected CSV Format:</h3>
-                <code className="block text-xs text-gray-300 overflow-x-auto">
-                  student_id,name,email,department,year,gpa,attendance_rate,engagement_score,risk_level<br />
-                  ST001,John Doe,john@example.com,Computer Science,2,3.45,85,78,low<br />
-                  ST002,Jane Smith,jane@example.com,Mathematics,3,3.89,92,85,low
-                </code>
               </div>
 
               {/* Status Messages */}
               {uploadStatus === 'parsing' && (
-                <Alert className="bg-blue-500/20 border-blue-500/50">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-blue-300">
-                    Parsing file... Please wait.
-                  </AlertDescription>
-                </Alert>
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-primary/10 border border-primary/20 animate-pulse">
+                  <Activity className="h-5 w-5 text-primary" />
+                  <p className="text-primary text-sm font-bold uppercase tracking-widest">Heuristic Parsing in Progress...</p>
+                </div>
               )}
 
               {uploadStatus === 'uploading' && (
-                <Alert className="bg-blue-500/20 border-blue-500/50">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-blue-300">
-                    Uploading students to database... Please wait.
-                  </AlertDescription>
-                </Alert>
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-secondary/10 border border-secondary/20 animate-pulse">
+                  <Upload className="h-5 w-5 text-secondary" />
+                  <p className="text-secondary text-sm font-bold uppercase tracking-widest">Injecting Data to Mainframe...</p>
+                </div>
               )}
 
               {uploadStatus === 'success' && (
-                <Alert className="bg-green-500/20 border-green-500/50">
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription className="text-green-300">
-                    All students uploaded successfully! Data is now visible on the public dashboard.
-                  </AlertDescription>
-                </Alert>
+                <div className="flex items-center gap-3 p-4 rounded-2xl bg-success/10 border border-success/20">
+                  <CheckCircle className="h-5 w-5 text-success" />
+                  <p className="text-success text-sm font-bold uppercase tracking-widest">Synchronization Complete</p>
+                </div>
               )}
             </div>
           </CardContent>
@@ -261,67 +256,61 @@ const UploadStudentsDataFile = () => {
 
         {/* Preview Section */}
         {previewData.length > 0 && uploadStatus === 'preview' && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20 text-white">
+          <Card className="bg-card/40 backdrop-blur-2xl border-white/5 text-white">
             <CardHeader>
-              <CardTitle>Data Preview ({previewData.length} records found)</CardTitle>
-              <CardDescription className="text-gray-300">
-                Review the data before uploading to database
+              <CardTitle className="text-xl font-bold">Data Preview ({previewData.length} records found)</CardTitle>
+              <CardDescription className="text-white/40 uppercase tracking-widest text-[10px] font-bold">
+                Review extracted payload structure
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto mb-6">
+              <div className="overflow-x-auto mb-8 rounded-2xl border border-white/5 bg-white/[0.01]">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-white/20">
-                      <th className="text-left p-2 text-white">Student ID</th>
-                      <th className="text-left p-2 text-white">Name</th>
-                      <th className="text-left p-2 text-white">Department</th>
-                      <th className="text-left p-2 text-white">Year</th>
-                      <th className="text-left p-2 text-white">GPA</th>
-                      <th className="text-left p-2 text-white">Risk Level</th>
+                    <tr className="border-b border-white/5 bg-white/[0.02]">
+                      <th className="text-left p-4 text-white font-bold">Student ID</th>
+                      <th className="text-left p-4 text-white font-bold">Name</th>
+                      <th className="text-left p-4 text-white font-bold">Sector</th>
+                      <th className="text-left p-4 text-white font-bold">Cycle</th>
+                      <th className="text-left p-4 text-white font-bold">GPA</th>
+                      <th className="text-left p-4 text-white font-bold">Risk Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {previewData.slice(0, 10).map((student, index) => (
-                      <tr key={index} className="border-b border-white/10">
-                        <td className="p-2 text-gray-300">{student.student_id}</td>
-                        <td className="p-2 text-gray-300">{student.name}</td>
-                        <td className="p-2 text-gray-300">{student.department}</td>
-                        <td className="p-2 text-gray-300">{student.year}</td>
-                        <td className="p-2 text-gray-300">{student.gpa || 'N/A'}</td>
-                        <td className="p-2 text-gray-300">{student.risk_level}</td>
+                      <tr key={index} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
+                        <td className="p-4 text-white/60 font-mono text-xs">{student.student_id}</td>
+                        <td className="p-4 text-white font-semibold">{student.name}</td>
+                        <td className="p-4 text-white/40">{student.department}</td>
+                        <td className="p-4 text-white/40 uppercase tracking-tighter text-xs">Year {student.year}</td>
+                        <td className="p-4 text-primary font-bold">{student.gpa || 'N/A'}</td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest border ${student.risk_level === 'high' ? 'bg-destructive/10 text-destructive border-destructive/20' :
+                              student.risk_level === 'medium' ? 'bg-warning/10 text-warning border-warning/20' :
+                                'bg-success/10 text-success border-success/20'
+                            }`}>
+                            {student.risk_level}
+                          </span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                {previewData.length > 10 && (
-                  <p className="text-gray-400 text-center mt-4">
-                    Showing first 10 records of {previewData.length} total
-                  </p>
-                )}
               </div>
 
               <div className="flex gap-4">
                 <Button
                   onClick={confirmUpload}
-                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                  className="bg-primary text-white font-black px-8 py-6 rounded-2xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
                   disabled={uploading}
                 >
-                  {uploading ? 'Uploading...' : 'Confirm Upload'}
+                  {uploading ? 'Processing...' : 'Confirm Synchronization'}
                 </Button>
                 <Button
                   onClick={resetUpload}
-                  variant="outline"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  className="bg-white/[0.03] border border-white/5 text-white/60 hover:text-white hover:bg-white/[0.05] rounded-2xl px-6 py-6 transition-all"
                 >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => navigate('/')}
-                  variant="outline"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-                >
-                  View Public Dashboard
+                  Abort Transmission
                 </Button>
               </div>
             </CardContent>
